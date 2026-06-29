@@ -103,13 +103,6 @@ body{
 
   <main style="max-width:1120px;margin:0 auto;padding:0 26px 130px">
 
-    <sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}">
-      <button onClick="{{ goHome }}" onMouseEnter="{{ glitch }}" title="back to home (esc)" style="margin-top:38px;margin-bottom:-8px;cursor:pointer;background:transparent;border:none;color:var(--ink-faint);font-family:inherit;font-size:13px;padding:0;display:inline-flex;align-items:center;gap:8px" style-hover="color:var(--accent)">
-        <span style="color:var(--accent)">←</span>
-        <span data-gt="cd ~">cd ~</span>
-      </button>
-    </sc-if>
-
     <!-- ░░░ HOME ░░░ -->
     <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
       <section style="padding:30px 0 40px">
@@ -773,7 +766,7 @@ class Component extends DCLogic {
       booting:this.state.booting,
       isMobile: this.state.isMobile, showTopExtras: !this.state.isMobile,
       scanlines: this.props.enableScanlines ?? false,
-      isHome:v==='home', showBack: v!=='home', isAbout:v==='about', isLibrary:v==='library',
+      isHome:v==='home', isAbout:v==='about', isLibrary:v==='library',
       isBookmarks:v==='bookmarks', isComputer:v==='computer', isMusic:v==='music', isProjects:v==='projects',
       paletteOpen:this.state.paletteOpen, q:this.state.q,
       noResults: this.state.paletteOpen && palItems.length===0,
