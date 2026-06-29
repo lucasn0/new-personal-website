@@ -45,6 +45,14 @@ body{
 </style>
 </helmet>
 
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="#14110d"/>
+    <text x="50" y="60" font-family="monospace" font-size="22" font-weight="700" fill="#e7ab53" text-anchor="middle">luk@</text>
+    <rect x="68" y="46" width="9" height="16" fill="#e7ab53"/>
+  </svg>
+</template>
+
 <div ref="{{ rootRef }}" style="position:relative;min-height:100vh;z-index:1">
 
   <div style="position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 90% at 75% -10%, rgba(231,171,83,0.06), transparent 55%), radial-gradient(100% 80% at 10% 110%, rgba(120,150,255,0.05), transparent 60%), radial-gradient(140% 120% at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%)"></div>
@@ -105,7 +113,7 @@ body{
           Lucas<br/><span style="color:var(--accent);text-shadow:0 0 38px var(--glow)">Nagel</span>
         </h1>
         <p style="max-width:560px;font-size:16px;color:var(--ink-dim);margin:0 0 38px;line-height:1.7">
-          computer science @ uba · building <span style="color:var(--accent)">pact.ar</span> · arch on the desktop, mac in the bag. i collect vinyl, hoard long books, and over-engineer my own corner of the web. <span style="color:var(--ink-faint)">— from argentina, with too many tabs open.</span>
+          computer science @ uba · building <span style="color:var(--accent)">pact.ar</span> · arch on the desktop, mac in the bag. i collect vinyl, hoard long books, and over-engineer my own corner of the web. <span style="color:var(--ink-faint)">from argentina, with too many tabs open.</span>
         </p>
 
         <div onClick="{{ shuffleQuote }}" style="cursor:pointer;max-width:620px;border-left:2px solid var(--accent);padding:14px 0 14px 20px;margin-bottom:8px;user-select:none">
@@ -140,25 +148,11 @@ body{
         <div style="color:var(--ink-faint);font-size:14px;margin-bottom:10px"><span style="color:var(--accent)">&gt; [luk@arch ~]$</span> cat about.md</div>
         <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(34px,6vw,60px);margin:0 0 26px;letter-spacing:-.02em">about</h2>
         <div style="max-width:660px;color:var(--ink-dim);font-size:15.5px;line-height:1.85">
-          <p style="margin:0 0 16px">I'm Lucas — a computer science student at the <span style="color:var(--ink)">University of Buenos Aires</span> and a full-stack developer who is happiest in a terminal with a tiling WM and a record spinning.</p>
+          <p style="margin:0 0 16px">I'm Lucas, a computer science student at the <span style="color:var(--ink)">University of Buenos Aires</span> and a full-stack developer who is happiest in a terminal with a tiling WM and a record spinning.</p>
           <p style="margin:0 0 16px">I build things end-to-end: I designed, shipped, and self-host <span style="color:var(--accent)">PACT.AR</span> on my own cloud infra. When I'm not coding I'm digging through crates, reading doorstop fantasy novels, or tweaking my dotfiles for the hundredth time.</p>
         </div>
 
-        <div style="margin-top:42px;color:var(--ink-faint);font-size:14px;margin-bottom:16px"><span style="color:var(--accent)">&gt; [luk@arch ~]$</span> ./projects</div>
-        <a href="https://pact.ar/" target="_blank" rel="noopener" onMouseEnter="{{ glitch }}" style="display:block;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:26px;max-width:760px;transition:border-color .18s ease" style-hover="border-color:var(--accent)">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
-            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:26px;color:var(--accent)"><span data-gt="PACT.AR">PACT.AR</span></span>
-            <span style="color:var(--ink-faint);font-size:12px">production · self-hosted</span>
-          </div>
-          <p style="color:var(--ink-dim);margin:14px 0 18px;line-height:1.75;font-size:14.5px">A SaaS platform for creating and signing digital contracts that are legally valid under Argentine law 25.506. Paperless, fast, and accessible — built for freelancers and small businesses, with Mercado Pago handling subscription billing.</p>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            <sc-for list="{{ stack }}" as="t" hint-placeholder-count="5">
-              <span style="font-size:12px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:4px 10px">{{ t }}</span>
-            </sc-for>
-          </div>
-        </a>
-
-        <div style="margin-top:46px;color:var(--ink-faint);font-size:14px;margin-bottom:6px"><span style="color:var(--accent)">&gt; [luk@arch ~]$</span> ./spin_donut --ascii</div>
+        <div style="margin-top:42px;color:var(--ink-faint);font-size:14px;margin-bottom:6px"><span style="color:var(--accent)">&gt; [luk@arch ~]$</span> ./spin_donut --ascii</div>
         <pre data-donut="1" style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.05;color:var(--accent);text-shadow:0 0 12px var(--glow);white-space:pre;margin:8px 0 0;min-height:260px"></pre>
       </section>
     </sc-if>
@@ -174,7 +168,7 @@ body{
             <div onMouseEnter="{{ glitch }}" style="display:grid;grid-template-columns:1fr auto;gap:14px;align-items:baseline;padding:11px 6px;border-bottom:1px solid var(--line-2)" style-hover="background:var(--surface)">
               <div style="min-width:0">
                 <span data-gt="{{ b.book }}" style="color:var(--ink);font-size:15px">{{ b.book }}</span>
-                <span style="color:var(--ink-faint);font-size:13px"> — {{ b.author }}</span>
+                <span style="color:var(--ink-faint);font-size:13px"> · {{ b.author }}</span>
               </div>
               <div style="color:var(--accent);font-size:14px;letter-spacing:1px;white-space:nowrap">{{ b.stars }}</div>
             </div>
@@ -251,16 +245,39 @@ body{
       </section>
     </sc-if>
 
-    <!-- ░░░ BLOG ░░░ -->
-    <sc-if value="{{ isBlog }}" hint-placeholder-val="{{ false }}">
+    <!-- ░░░ PROJECTS ░░░ -->
+    <sc-if value="{{ isProjects }}" hint-placeholder-val="{{ false }}">
       <section style="padding:54px 0 0">
-        <div style="color:var(--ink-faint);font-size:14px;margin-bottom:10px"><span style="color:var(--accent)">&gt; [luk@arch my_blog]$</span> ls posts/</div>
-        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(34px,6vw,60px);margin:0 0 22px;letter-spacing:-.02em">blog</h2>
-        <div style="background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:40px;max-width:560px;text-align:center">
-          <div style="color:var(--accent);font-size:32px;margin-bottom:14px">{ }</div>
-          <p style="color:var(--ink);margin:0 0 8px;font-size:16px">work in progress.</p>
-          <p style="color:var(--ink-dim);margin:0;font-size:13.5px">no posts yet — I'm still deciding whether the first one is about tiling window managers or why analog still wins. check back soon.</p>
-        </div>
+        <div style="color:var(--ink-faint);font-size:14px;margin-bottom:10px"><span style="color:var(--accent)">&gt; [luk@arch ~]$</span> ls projects/ --featured</div>
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(34px,6vw,60px);margin:0 0 6px;letter-spacing:-.02em">projects</h2>
+        <p style="color:var(--ink-dim);margin:0 0 30px;font-size:14px">things I've designed, built, and shipped end-to-end.</p>
+
+        <article style="background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:900px">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+            <div style="position:relative;min-height:260px;background:repeating-linear-gradient(135deg, var(--surface-2) 0, var(--surface-2) 12px, rgba(255,255,255,0.02) 12px, rgba(255,255,255,0.02) 24px);display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line)">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-faint);letter-spacing:.04em;text-align:center;line-height:1.7;padding:0 20px">[ drop screenshot ]<br/>pact.ar dashboard</span>
+            </div>
+            <div style="padding:26px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+                <span onMouseEnter="{{ glitch }}" style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:28px;color:var(--accent)"><span data-gt="PACT.AR">PACT.AR</span></span>
+                <span style="color:var(--ink-faint);font-size:12px">production · self-hosted</span>
+              </div>
+              <div style="color:var(--ink-dim);font-size:12.5px;margin-top:4px">solo · product design, full-stack &amp; cloud infra</div>
+              <p style="color:var(--ink-dim);margin:16px 0;line-height:1.75;font-size:14.5px">A SaaS platform for creating and signing digital contracts that are legally valid under Argentine law 25.506. Paperless, fast, and accessible, built for freelancers and small businesses, with Mercado Pago handling subscription billing.</p>
+              <ul style="list-style:none;margin:0 0 18px;padding:0;display:flex;flex-direction:column;gap:8px">
+                <sc-for list="{{ projectHighlights }}" as="hl" hint-placeholder-count="3">
+                  <li style="display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--ink-dim);line-height:1.5"><span style="color:var(--accent);flex:0 0 auto">+</span><span>{{ hl }}</span></li>
+                </sc-for>
+              </ul>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+                <sc-for list="{{ stack }}" as="t" hint-placeholder-count="6">
+                  <span style="font-size:12px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:4px 10px">{{ t }}</span>
+                </sc-for>
+              </div>
+              <a href="https://pact.ar/" target="_blank" rel="noopener" onMouseEnter="{{ glitch }}" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:13.5px;padding:9px 16px;border-radius:8px;transition:box-shadow .18s ease" style-hover="box-shadow:0 0 18px var(--glow)"><span data-gt="visit pact.ar">visit pact.ar</span><span>↗</span></a>
+            </div>
+          </div>
+        </article>
       </section>
     </sc-if>
 
@@ -339,7 +356,7 @@ class Component extends DCLogic {
     let view = 'home';
     if (typeof location!=='undefined' && location.hash){
       const h = location.hash.replace('#','');
-      if (['about','library','bookmarks','computer','music','blog'].includes(h)) view = h;
+      if (['about','projects','library','bookmarks','computer','music'].includes(h)) view = h;
     }
     let theme = this.props.defaultTheme || (typeof localStorage!=='undefined' && localStorage.getItem('theme')) || 'amber';
     if (!this.THEMES[theme]) theme = 'amber';
@@ -355,7 +372,7 @@ class Component extends DCLogic {
       isMobile: (typeof window!=='undefined' && window.innerWidth<680)
     };
 
-    this.GC = '!<>-_\\/[]{}—=+*^?#________'.split('');
+    this.GC = '!<>-_\\/[]{}=+*^?#________'.split('');
     this.typed = ''; this.typedAuthor = '';
 
     this.QUOTES = JSON.parse(`[{"author":"Marcus Aurelius","quote":"Your mind will be like its habitual thoughts; for the soul becomes dyed with the color of its thoughts."},{"author":"Marcus Aurelius","quote":"The happiness of your life depends upon the quality of your thoughts."},{"author":"Jorge Luis Borges","quote":"La duda es uno de los nombres de la inteligencia."},{"author":"John Greenleaf Whittier","quote":"Of all sad words of tongue or pen, the saddest are these, 'it might have been.'"},{"author":"African proverb","quote":"When an old man dies, a library burns to the ground."},{"author":"Heraclitus","quote":"No man ever steps in the same river twice, for it's not the same river and he's not the same man."},{"author":"Futurama","quote":"When you do things right, people won't be sure you've done anything at all."},{"author":"The Lord of the Rings","quote":"I do not love the bright sword for its sharpness, nor the arrow for its swiftness, nor the warrior for his glory. I love only that which they defend."},{"author":"Fight Club","quote":"It's only after we've lost everything that we're free to do anything."},{"author":"Unknown","quote":"Biology is really Chemistry. Chemistry is really Physics. Physics is really Math. Math is really hard."},{"author":"Aristotle","quote":"It is the mark of an educated mind to be able to entertain a thought without accepting it."},{"author":"Charles Darwin","quote":"It is not the strongest of the species that survives, nor the most intelligent that survives. It is the one that is most adaptable to change."},{"author":"Margaret Loxton","quote":"If you choose not to find joy in the snow, you will have less joy but still the same amount of snow."},{"author":"Charles Dickens","quote":"You have been in every line I have ever read."},{"author":"James S. A. Corey","quote":"If life transcends death; then I will seek for you there. If not, then there too."},{"author":"Laura Donney","quote":"What is grief, if not love persevering?"},{"author":"Antoine de Saint Exupery","quote":"Life has taught us that love does not consist in gazing at each other but in looking outward together in the same direction."},{"author":"Dr. Seuss","quote":"You know you're in love when you can't fall asleep because reality is finally better than your dreams."},{"author":"William Faulkner","quote":"Perhaps they were right putting love into books. Perhaps it could not live anywhere else."},{"author":"The Lord of the Rings","quote":"I would rather share one lifetime with you than face all the ages of this world alone."},{"author":"Mark Twain","quote":"You go to heaven for the climate and hell for the company."},{"author":"Unknown","quote":"Knowledge speaks but wisdom listens."},{"author":"Unknown","quote":"Be the things that you loved the most about the people who are gone."},{"author":"Albert Einstein","quote":"You can't blame gravity for falling in love."},{"author":"Unknown","quote":"Data can't hold a heartbeat."},{"author":"Cormac McCarthy","quote":"You'll never know what worse luck your bad luck has saved you from."},{"author":"Unknown","quote":"If you think you hate everyone, have something to eat. If you think everyone hates you, have a nap."},{"author":"John Steinbeck","quote":"I shall revenge myself in the cruelest way you can imagine. I shall forget it."},{"author":"Soren Kierkegaard","quote":"Do it, don't do it - You will regret both."},{"author":"Unknown","quote":"You'll never find same person twice. Not even in the same person."},{"author":"Henry Hazlitt","quote":"A problem properly stated is a problem partly solved."},{"author":"Unknown","quote":"Smart people don't know everything. Simply how and where to find answers."},{"author":"John Wooden","quote":"The true test of a man's character is what he does when no one is watching."},{"author":"Seneca","quote":"For those who do not know what port they're sailing to, no wind is favourable."},{"author":"Persian proverb","quote":"This too shall pass."},{"author":"Jorge Luis Borges","quote":"Lo que realmente valoras es lo que extranas."},{"author":"Oscar Wilde","quote":"Be yourself; everyone else is already taken."},{"author":"Isaac Asimov","quote":"After all, all devices have their dangers. The discovery of speech introduced communication and lies."},{"author":"Fiodor Dostoievsky","quote":"Si Dios no existe, todo esta permitido."},{"author":"Pablo Neruda","quote":"Podran cortar todas las flores, pero no podran detener la primavera."}]`);
@@ -364,12 +381,12 @@ class Component extends DCLogic {
     this.VINYLS = JSON.parse(`[{"cover":"images/kanye-west-mbdtf.jpg","title":"My Beautiful Dark Twisted Fantasy","artist":"Kanye West","year":2010,"duration":"74:45","tracklist":["Dark Fantasy","Gorgeous","Power","All of the Lights (Interlude)","All of the Lights","Monster","So Appalled","Devil In a New Dress","Runaway","Hell of a Life","Blame Game","Lost In the World","Who Will Survive In America","See Me Now"]},{"cover":"images/led-zeppelin-iv.jpg","title":"Led Zeppelin IV","artist":"Led Zeppelin","year":1971,"duration":"42:36","tracklist":["Black Dog","Rock and Roll","The Battle of Evermore","Stairway to Heaven","Misty Mountain Hop","Four Sticks","Going to California","When the Levee Breaks"]},{"cover":"images/arctic-monkeys-wpsiatwin.jpg","title":"Whatever People Say I Am, That's What I'm Not","artist":"Arctic Monkeys","year":2006,"duration":"41:19","tracklist":["The View from the Afternoon","I Bet You Look Good on the Dancefloor","Fake Tales of San Francisco","Dancing Shoes","You Probably Couldn't See for the Lights but You Were Looking Straight at Me","Still Take You Home","Riot Van","Red Light Indicates Doors Are Secured","Mardy Bum","Perhaps Vampires Is a Bit Strong But...","When the Sun Goes Down","From the Ritz to the Rubble","A Certain Romance"]},{"cover":"images/nas-illmatic.jpg","title":"Illmatic","artist":"Nas","year":1994,"duration":"39:50","tracklist":["The Genesis","N.Y. State of Mind","Life's a Bitch","The World Is Yours","Halftime","Memory Lane (Sittin' in da Park)","One Love","One Time 4 Your Mind","Represent","It Ain't Hard to Tell"]},{"cover":"images/arctic-monkeys-fwn.jpg","title":"Favourite Worst Nightmare","artist":"Arctic Monkeys","year":2007,"duration":"37:38","tracklist":["Brianstorm","Teddy Picker","D Is for Dangerous","Balaclava","Fluorescent Adolescent","Only Ones Who Know","Do Me a Favour","This House Is a Circus","If You Were There, Beware","The Bad Thing","Old Yellow Bricks","505"]},{"cover":"images/daft-punk-discovery.png","title":"Discovery","artist":"Daft Punk","year":2001,"duration":"61:08","tracklist":["One More Time","Aerodynamic","Digital Love","Harder Better Faster Stronger","Crescendolls","Nightvision","Superheroes","High Life","Something About Us","Voyager","Veridis Quo","Short Circuit","Face to Face","Too Long"]},{"cover":"images/daft-punk-ram.png","title":"Random Access Memories","artist":"Daft Punk","year":2013,"duration":"74:34","tracklist":["Give Life Back to Music","The Game of Love","Giorgio by Moroder","Within","Instant Crush","Lose Yourself to Dance","Touch","Get Lucky","Beyond","Motherboard","Fragments of Time","Doin' it Right","Contact"]},{"cover":"images/gustavo-cerati-bocanada.jpg","title":"Bocanada","artist":"Gustavo Cerati","year":1999,"duration":"69:25","tracklist":["Tabu","Engana","Bocanada","Puente","Rio Babel","Beautiful","Perdonar Es Divino","Verbo Carne","Raiz","Y Si el Humo Esta en Foco...","Paseo Inmoral","Aqui & Ahora (Los Primeros 3 Minutos)","Aqui & Ahora (y Despues)","Alma","Balsa"]},{"cover":"images/kanye-west-808s.jpg","title":"808s & Heartbreak","artist":"Kanye West","year":2008,"duration":"52:05","tracklist":["Say You Will","Welcome To Heartbreak","Heartless","Amazing","Love Lockdown","Paranoid","RoboCop","Street Lights","Bad News","See You In My Nightmares","Coldest Winter","Pinocchio Story (Live From Singapore)"]},{"cover":"images/kanye-west-graduation.jpg","title":"Graduation","artist":"Kanye West","year":2007,"duration":"54:30","tracklist":["Good Morning","Champion","Stronger","I Wonder","Good Life","Can't Tell Me Nothing","Barry Bonds","Drunk and Hot Girls","Flashing Lights","Everything I Am","The Glory","Homecoming","Big Brother","Good Night"]},{"cover":"images/pescado-rabioso-artaud.jpg","title":"Artaud","artist":"Pescado Rabioso","year":1973,"duration":"36:20","tracklist":["Todas las Hojas Son del Viento","Cementerio Club","Por","Supercheria","La Sed Verdadera","Cantata de Puentes Amarillos","Bajan","A Starosta, el Idiota","Las Habladurias del Mundo"]},{"cover":"images/pink-floyd-animals.jpg","title":"Animals","artist":"Pink Floyd","year":1977,"duration":"41:41","tracklist":["Pigs on the Wing, Part 1","Dogs","Pigs (Three Different Ones)","Sheep","Pigs on the Wing, Part 2"]},{"cover":"images/more-life.jpg","title":"More Life","artist":"Drake","year":2017,"duration":"81:39","tracklist":["Free Smoke","No Long Talk","Passionfruit","Jorja Interlude","Get It Together","Madiba Riddim","Blem","4422","Gyalchester","Skepta Interlude","Portland","Sacrifices","Nothings Into Somethings","Teenage Fever","Kmt","Lose You","Can't Have Everything","Glow","Since Way Back","Fake Love","Ice Melts","Do Not Disturb"]},{"cover":"images/late-registration.jpg","title":"Late Registration","artist":"Kanye West","year":2005,"duration":"70:02","tracklist":["Wake Up Mr. West","Heard 'Em Say","Touch the Sky","Gold Digger","Skit #1","Drive Slow","My Way Home","Crack Music","Roses","Bring Me Down","Addiction","Skit #2","Diamonds from Sierra Leone [Remix]","We Major","Skit #3","Hey Mama","Celebration","Skit #4","Gone","Diamonds from Sierra Leone","Late"]},{"cover":"images/ella-louis.jpg","title":"The Complete Ella and Louis on Verve","artist":"Ella Fitzgerald","year":1997,"duration":"219:02","tracklist":["Can't We Be Friends?","Isn't This a Lovely Day?","Moonlight in Vermont","They Can't Take That Away From Me","Under a Blanket of Blue","Tenderly","A Foggy Day","Stars Fell on Alabama","Cheek to Cheek","The Nearness of You","April in Paris","Don't Be That Way","Makin' Whoopee","They All Laughed","Comes Love","Autumn in New York","Let's Do It","Stompin' at the Savoy","I Won't Dance","Gee Baby, Ain't I Good to You?","Let's Call the Whole Thing Off","These Foolish Things","I've Got My Love to Keep Me Warm","Willow Weep for Me","A Fine Romance","Love Is Here to Stay","I Get a Kick Out of You","Learnin' the Blues","Summertime","Bess, You Is My Woman Now","It Ain't Necessarily So"]},{"cover":"images/ahi-vamos.jpg","title":"Ahi Vamos","artist":"Gustavo Cerati","year":2006,"duration":"56:34","tracklist":["Al Fin Sucede","La Excepcion","Uno Entre 1000","Caravana","Adios","Me Quedo Aqui","Lago en el Cielo","Dios Nos Libre","Otra Piel","Medium","Bomba de Tiempo","Crimen","Jugo de Luna"]},{"cover":"images/24k-magic.png","title":"24K Magic","artist":"Bruno Mars","year":2016,"duration":"33:33","tracklist":["24K Magic","Chunky","Perm","That's What I Like","Versace On The Floor","Straight Up & Down","Calling All My Lovelies","Finesse","Too Good to Say Goodbye"]},{"cover":"images/divididos-felicidad.jpg","title":"Divididos Por la Felicidad","artist":"Sumo","year":1985,"duration":"38:24","tracklist":["La Rubia Tarada","Mula Plateada","No Acabes","Regtest","El Reggae de Paz y Amor","Debede","Mejor No Hablar de Ciertas Cosas","Divididos Por la Felicidad","No Duermas Mas","Kaya"]},{"cover":"images/in-rainbows.png","title":"In Rainbows","artist":"Radiohead","year":2007,"duration":"42:39","tracklist":["15 Step","Bodysnatchers","Nude","Weird Fishes / Arpeggi","All I Need","Faust Arp","Reckoner","House of Cards","Jigsaw Falling Into Place","Videotape"]},{"cover":"images/mezzanine.png","title":"Mezzanine","artist":"Massive Attack","year":1998,"duration":"62:00","tracklist":["Angel","Risingson","Teardrop","Inertia Creeps","Exchange","Dissolved Girl","Man Next Door","Black Milk","Mezzanine","Group Four","(Exchange)"]},{"cover":"images/physical-graffity.jpg","title":"Physical Graffiti","artist":"Led Zeppelin","year":1975,"duration":"82:54","tracklist":["Custard Pie","The Rover","In My Time of Dying","Houses of the Holy","Trampled Under Foot","Kashmir","In the Light","Bron-Yr-Aur","Down By the Seaside","Ten Years Gone","Night Flight","The Wanton Song","Boogie With Stu","Black Country Woman","Sick Again"]},{"cover":"images/the-low-end-theory.jpg","title":"The Low End Theory","artist":"A Tribe Called Quest","year":1991,"duration":"48:04","tracklist":["Excursions","Buggin' Out","Rap Promoter","Butter","Verses From the Abstract","Show Business","Vibes and Stuff","The Infamous Date Rape","Check the Rhime","Everything Is Fair","Jazz (We've Got)","Skypager","What?","Scenario"]},{"cover":"images/sueño-stereo.jpg","title":"Sueno Stereo","artist":"Soda Stereo","year":1995,"duration":"53:02","tracklist":["Ella Uso Mi Cabeza Como un Revolver","Disco Eterno","Zoom","Ojo de la Tormenta","Efecto Doppler","Paseando Por Roma","Pasos","Angel Electrico","Crema de Estrellas","Planta","X Playo","Moire"]},{"cover":"images/sgt-pepper.jpg","title":"Sgt. Pepper's Lonely Hearts Club Band","artist":"The Beatles","year":1967,"duration":"39:52","tracklist":["Sgt. Pepper's Lonely Hearts Club Band","With a Little Help From My Friends","Lucy In the Sky with Diamonds","Getting Better","Fixing a Hole","She's Leaving Home","Being For the Benefit of Mr. Kite!","Within You Without You","When I'm Sixty-Four","Lovely Rita","Good Morning Good Morning","Sgt. Pepper's (Reprise)","A Day In the Life"]}]`);
 
     this.ROOMS = [
-      {label:'about',     path:'~/about',     desc:'who i am · what i build', tag:'dir', kind:'view', to:'about'},
+      {label:'about',     path:'~/about',     desc:'who i am',                tag:'dir', kind:'view', to:'about'},
+      {label:'projects',  path:'~/projects',  desc:'what i build & ship',     tag:'dir', kind:'view', to:'projects'},
       {label:'music',     path:'~/music',     desc:'the vinyl shelf',          tag:'dir', kind:'view', to:'music'},
       {label:'library',   path:'~/library',   desc:'books & honest ratings',   tag:'dir', kind:'view', to:'library'},
       {label:'bookmarks', path:'~/bookmarks', desc:'links worth keeping',      tag:'dir', kind:'view', to:'bookmarks'},
       {label:'machine',   path:'~/machine',   desc:'what i type on',           tag:'dir', kind:'view', to:'computer'},
-      {label:'blog',      path:'~/blog',      desc:'thoughts, eventually',     tag:'dir', kind:'view', to:'blog'},
       {label:'github',    path:'gh://lucasn0',     desc:'code & dotfiles',         tag:'ext', kind:'ext', href:'https://github.com/lucasn0'},
       {label:'linkedin',  path:'in/nagel-lucas',   desc:'the professional mask',   tag:'ext', kind:'ext', href:'https://www.linkedin.com/in/nagel-lucas/'},
       {label:'steam',     path:'id/fardes1',       desc:'hours i won’t admit to',  tag:'ext', kind:'ext', href:'https://steamcommunity.com/id/fardes1/'},
@@ -382,19 +399,19 @@ class Component extends DCLogic {
 
     this.MACHINES = [
       {
-        caption:'// workstation — luk@archlinux',
+        caption:'// workstation · luk@archlinux',
         logo:"                   -\`\n                  .o+\`\n                 \`ooo/\n                \`+oooo:\n               \`+oooooo:\n               -+oooooo+:\n             \`/:-:++oooo+:\n            \`/++++/+++++++:\n           \`/++++++++++++++:\n          \`/+++ooooooooooooo/\`\n         ./ooosssso++osssssso+\`\n        .oossssso-\`\`\`\`/ossssss+\`\n       -osssssso.      :ssssssso.\n      :osssssss/        osssso+++.\n     /ossssssss/        +ssssooo/-\n   \`/ossssso+/:-        -:/+osssso+-\n  \`+sso+:-\`                 \`.-/+oso:\n \`++:.                           \`-/+/\n .\`                                 \`/",
         body:"luk@archlinux\n-------------\nOS: Arch Linux x86_64\nKernel: 7.0.13-arch1-1\nPackages: 1316 (pacman)\nShell: zsh 5.9.1\nResolution: 1920x1200, 2560x1440\nDE: KDE Plasma 6.7.1\nWM: KWin (Wayland)\nTheme: Breeze (Dark)\nTerminal: konsole 26.4.2\nTerm Font: JetBrainsMono Nerd Font 11\nCPU: AMD Ryzen 5 5600T (12) @ 4.576GHz\nGPU: AMD Radeon RX 6800 XT\nMemory: 9915MiB / 15899MiB"
       },
       {
-        caption:'// laptop — luk@macair',
+        caption:'// laptop · luk@macair',
         logo:"                    'c.\n                 ,xNMM.\n               .OMMMMo\n               OMMM0,\n     .;loddo:' loolloddol;.\n   cKMMMMMMMMMMNWMMMMMMMMMM0:\n .KMMMMMMMMMMMMMMMMMMMMMMMWd.\n XMMMMMMMMMMMMMMMMMMMMMMMX.\n;MMMMMMMMMMMMMMMMMMMMMMMM:\n:MMMMMMMMMMMMMMMMMMMMMMMM:\n.MMMMMMMMMMMMMMMMMMMMMMMMX.\n kMMMMMMMMMMMMMMMMMMMMMMMMWd.\n .XMMMMMMMMMMMMMMMMMMMMMMMMMMk\n  .XMMMMMMMMMMMMMMMMMMMMMMMMK.\n    kMMMMMMMMMMMMMMMMMMMMMMd\n     ;KMMMMMMMWXXWMMMMMMMk.\n       .cooc*\"    \"*coo'.",
         body:"luk@macair\n----------\nOS: macOS Tahoe 26.5.1 arm64\nHost: MacBook Air (13\", M5, 2026)\nKernel: Darwin 25.5.0\nPackages: 43 (brew), 6 (cask)\nShell: zsh 5.9\nDisplay: 2940x1912 @ 2x in 14\"\nWM: Quartz Compositor\nTheme: Liquid Glass\nTerminal: ghostty 1.3.1\nTerm Font: JetBrainsMono Nerd Font 13\nCPU: Apple M5 (4+6) @ 4.46 GHz\nGPU: Apple M5 (8) @ 1.58 GHz\nMemory: 10.10 / 16.00 GiB (63%)\nBattery: 86% (9h 31m) [Discharging]"
       }
     ];
 
     this.BOOT = [
-      {h:'<span style="color:var(--accent)">[ boot ]</span> luk@arch — personal system v3.0'},
+      {h:'<span style="color:var(--accent)">[ boot ]</span> luk@arch · personal system v3.0'},
       {h:'<span style="color:var(--accent)">[ ok ]</span>   mounting /home/luk'},
       {h:'<span style="color:var(--accent)">[ ok ]</span>   loading dotfiles &amp; rc'},
       {h:'<span style="color:var(--accent)">[ ok ]</span>   spawning window manager'},
@@ -524,7 +541,7 @@ class Component extends DCLogic {
   startTicker(){
     this._npText='now listening to silence';
     let flip=0;
-    const upd=()=>{ if(this.tickerRef.current){ this.tickerRef.current.textContent = flip%2===0 ? this.uptime() : this._npText; flip++; }
+    const upd=()=>{ if(this.tickerRef.current){ this.tickerRef.current.textContent = this.uptime(); }
       const npEl=document.querySelector('[data-np]'); if(npEl && this._npRaw) npEl.textContent=this._npRaw; };
     upd(); this._tick=setInterval(upd,6000);
   }
@@ -534,7 +551,7 @@ class Component extends DCLogic {
       const r=await fetch(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=fardes1&api_key=${key}&format=json&limit=1`);
       const data=await r.json();
       const t=data.recenttracks.track[0];
-      const txt=`${t.artist['#text']} — ${t.name}`;
+      const txt=`${t.artist['#text']} · ${t.name}`;
       this._npText=`now listening to ${txt}`; this._npRaw=txt;
       const el=document.querySelector('[data-np]'); if(el) el.textContent=txt;
     }catch(e){
@@ -550,7 +567,7 @@ class Component extends DCLogic {
     const q=document.querySelector('[data-quote]'), a=document.querySelector('[data-author]');
     if(!q||!a){ if(this.state.view==='home'){ clearTimeout(this._qRetry); this._qRetry=setTimeout(()=>this.shuffleQuote(),80); } return; }
     const item=this.QUOTES[Math.floor(Math.random()*this.QUOTES.length)];
-    const full=`"${item.quote}"`; const auth=`— ${item.author}`;
+    const full=`"${item.quote}"`; const auth=`${item.author}`;
     q.textContent=''; a.textContent=''; this.typed=''; this.typedAuthor='';
     let i=0;
     this._type=setInterval(()=>{
@@ -667,7 +684,7 @@ class Component extends DCLogic {
     if(e.key==='/'){ e.preventDefault(); this.openPalette(); return; }
     if(e.key==='Escape'){ if(this.state.view!=='home') this.go('home'); return; }
     if(e.key==='t'){ this.cycleTheme(); return; }
-    const map={a:'about',m:'music',l:'library',b:'bookmarks',c:'computer',g:'blog',h:'home'};
+    const map={a:'about',p:'projects',m:'music',l:'library',b:'bookmarks',c:'computer',h:'home'};
     if(map[e.key]) this.go(map[e.key]);
   }
 
@@ -685,7 +702,7 @@ class Component extends DCLogic {
       target: r.kind==='ext'? '_blank' : undefined,
       onClick: r.kind==='ext'? null : (e)=>{ e.preventDefault(); this.go(r.to); }
     }));
-    const library=this.LIBRARY.map(b=>({ book:b.book, author:b.author, stars: b.rating>0? this.stars(b.rating) : '— n/a' }));
+    const library=this.LIBRARY.map(b=>({ book:b.book, author:b.author, stars: b.rating>0? this.stars(b.rating) : 'n/a' }));
     const bookmarks=this.BOOKMARKS.map(b=>{ let host=''; try{ host=new URL(b.url).hostname.replace('www.',''); }catch(e){ host=''; } return {name:b.name, url:b.url, host}; });
 
     const hover=this.state.musicHover;
@@ -724,11 +741,12 @@ class Component extends DCLogic {
       isMobile: this.state.isMobile, showTopExtras: !this.state.isMobile,
       scanlines: this.props.enableScanlines ?? false,
       isHome:v==='home', isAbout:v==='about', isLibrary:v==='library',
-      isBookmarks:v==='bookmarks', isComputer:v==='computer', isMusic:v==='music', isBlog:v==='blog',
+      isBookmarks:v==='bookmarks', isComputer:v==='computer', isMusic:v==='music', isProjects:v==='projects',
       paletteOpen:this.state.paletteOpen, q:this.state.q,
       noResults: this.state.paletteOpen && palItems.length===0,
       themeDots, rooms, library, bookmarks, vinyls, machines, palItems,
       stack:this.STACK,
+      projectHighlights:['legally-valid e-signatures under Argentine law 25.506','Mercado Pago subscription billing, built in','self-hosted end-to-end on personal cloud infra'],
       bookCount:this.LIBRARY.length, vinylCount:this.VINYLS.length,
       dimOpacity: hover?1:0,
       glitch:this.glitch, goHome:this.goHome, openPalette:this.openPalette,
