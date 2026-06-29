@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=JetBrains+Mono:ital,wght@0,300..700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14110d; --bg-2:#1b1712; --surface:#1e1913; --surface-2:#241e16;
+  --ink:#ece2d0; --ink-dim:#9d9282; --ink-faint:#6b6358;
+  --line:rgba(236,226,208,0.12); --line-2:rgba(236,226,208,0.055);
+  --accent:#e7ab53; --accent-2:#f3c57e; --glow:rgba(231,171,83,0.42); --accent-ink:#1a1207;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--accent);color:var(--accent-ink)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:var(--ink-faint)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes twinkle{0%{opacity:.15}50%{opacity:.85}100%{opacity:.15}}
+@keyframes eqbar{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+@keyframes bootline{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glowpulse{0%,100%{opacity:.5}50%{opacity:.9}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.star{position:fixed;background:var(--ink);border-radius:50%;opacity:0;z-index:0;pointer-events:none;animation:twinkle infinite ease-in-out}
+.moon{position:fixed;width:46px;height:46px;border-radius:50%;z-index:0;opacity:.92;filter:drop-shadow(0 0 16px var(--glow))}
+</style>
+</helmet>
+
+<div ref="{{ rootRef }}" style="position:relative;min-height:100vh;z-index:1">
+
+  <div style="position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 90% at 75% -10%, rgba(231,171,83,0.06), transparent 55%), radial-gradient(100% 80% at 10% 110%, rgba(120,150,255,0.05), transparent 60%), radial-gradient(140% 120% at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%)"></div>
+
+  <sc-if value="{{ scanlines }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:50;pointer-events:none;mix-blend-mode:overlay;opacity:.5;background:repeating-linear-gradient(0deg, rgba(0,0,0,0) 0, rgba(0,0,0,0) 2px, rgba(0,0,0,0.5) 3px, rgba(0,0,0,0) 4px)"></div>
+  </sc-if>
+
+  <!-- ░░░ TOP BAR ░░░ -->
+  <header style="position:sticky;top:0;z-index:30;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:linear-gradient(180deg, rgba(20,17,13,0.92), rgba(20,17,13,0.62));border-bottom:1px solid var(--line)">
+    <div style="max-width:1120px;margin:0 auto;padding:13px 26px;display:flex;align-items:center;gap:20px">
+      <div onClick="{{ goHome }}" onMouseEnter="{{ glitch }}" style="cursor:pointer;display:flex;align-items:center;gap:9px;flex:0 0 auto">
+        <span style="color:var(--accent);font-weight:700"><span data-gt="luk@arch">luk@arch</span></span>
+        <span style="color:var(--ink-faint)">:</span>
+        <span style="color:var(--ink-dim)">~</span>
+        <span style="color:var(--accent)">$</span>
+        <span style="color:var(--accent);animation:blink 1.1s step-end infinite">▮</span>
+      </div>
+
+      <div style="flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:8px;color:var(--ink-faint);overflow:hidden">
+        <sc-if value="{{ showTopExtras }}" hint-placeholder-val="{{ true }}">
+          <span style="color:var(--accent);opacity:.7">♪</span>
+          <div style="display:flex;gap:2px;align-items:flex-end;height:13px;flex:0 0 auto">
+            <span style="width:2.5px;height:100%;background:var(--accent);transform-origin:bottom;animation:eqbar .9s ease-in-out infinite"></span>
+            <span style="width:2.5px;height:100%;background:var(--accent);transform-origin:bottom;animation:eqbar .9s ease-in-out infinite;animation-delay:.25s"></span>
+            <span style="width:2.5px;height:100%;background:var(--accent);transform-origin:bottom;animation:eqbar .9s ease-in-out infinite;animation-delay:.5s"></span>
+          </div>
+          <span data-np="1" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-dim);font-size:13px">connecting to last.fm…</span>
+        </sc-if>
+      </div>
+
+      <button onClick="{{ openPalette }}" onMouseEnter="{{ glitch }}" style="flex:0 0 auto;cursor:pointer;background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);font-family:inherit;font-size:12.5px;padding:6px 11px;border-radius:7px;display:flex;align-items:center;gap:7px" style-hover="border-color:var(--accent);color:var(--ink)">
+        <span data-gt="search">search</span>
+        <span style="border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:11px;color:var(--ink-faint)">⌘K</span>
+      </button>
+
+      <div style="flex:0 0 auto;display:flex;align-items:center;gap:7px">
+        <sc-for list="{{ themeDots }}" as="dot" hint-placeholder-count="3">
+          <button onClick="{{ dot.onClick }}" title="{{ dot.title }}" style="width:15px;height:15px;border-radius:50%;cursor:pointer;padding:0;background:{{ dot.color }};border:2px solid {{ dot.ring }};box-shadow:0 0 8px {{ dot.glow }}"></button>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ showTopExtras }}" hint-placeholder-val="{{ true }}">
+        <span data-clock="1" style="flex:0 0 auto;color:var(--ink-faint);font-size:13px;font-variant-numeric:tabular-nums">--:--:--</span>
+      </sc-if>
+    </div>
+  </header>
+
+  <main style="max-width:1120px;margin:0 auto;padding:0 26px 130px">
+
+    <!-- ░░░ HOME ░░░ -->
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <section style="padding:64px 0 40px">
+        <div style="color:var(--ink-faint);font-size:14px;margin-bottom:18px">
+          <span style="color:var(--accent)">&gt; [luk@arch ~]$</span> whoami
+        </div>
+        <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(48px,9vw,104px);line-height:.95;letter-spacing:-.02em;margin:0 0 18px;color:var(--ink)">
+          Lucas<br/><span style="color:var(--accent);text-shadow:0 0 38px var(--glow)">Nagel</span>
+        </h1>
+        <p style="max-width:560px;font-size:16px;color:var(--ink-dim);margin:0 0 38px;line-height:1.7">
+          computer science @ uba · building <span style="color:var(--accent)">pact.ar</span> · arch on the desktop, mac in the bag. i collect vinyl, hoard long books, and over-engineer my own corner of the web. <span style="color:var(--ink-faint)">— from argentina, with too many tabs open.</span>
+        </p>
+
+        <div onClick="{{ shuffleQuote }}" style="cursor:pointer;max-width:620px;border-left:2px solid var(--accent);padding:14px 0 14px 20px;margin-bottom:8px;user-select:none">
+          <p data-quote="1" style="margin:0;font-style:italic;font-size:18px;line-height:1.6;min-height:1.6em;color:var(--ink)"></p>
+          <p data-author="1" style="margin:10px 0 0;color:var(--accent);font-size:14px"></p>
+        </div>
+        <div style="color:var(--ink-faint);font-size:12px;margin-bottom:10px">↑ click to reshuffle · press <span style="color:var(--ink-dim)">/</span> to search · <span style="color:var(--ink-dim)">t</span> for themes</div>
+      </section>
+
+      <section style="padding-bottom:30px">
+        <div style="color:var(--ink-faint);font-size:14px;margin-bottom:18px">
+          <span style="color:var(--accent)">&gt; [luk@arch ~]$</span> ls ~/
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:14px">
+          <sc-for list="{{ rooms }}" as="room" hint-placeholder-count="12">
+            <a href="{{ room.href }}" target="{{ room.target }}" rel="noopener" onClick="{{ room.onClick }}" onMouseEnter="{{ glitch }}" style="display:block;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 17px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease" style-hover="transform:translateY(-3px);border-color:var(--accent);box-shadow:0 10px 30px rgba(0,0,0,.35),0 0 0 1px var(--glow)">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
+                <span style="color:var(--accent);font-size:12.5px">{{ room.path }}</span>
+                <span style="color:var(--ink-faint);font-size:11px">{{ room.tag }}</span>
+              </div>
+              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:23px;line-height:1;margin-bottom:7px"><span data-gt="{{ room.label }}">{{ room.label }}</span></div>
+              <div style="color:var(--ink-dim);font-size:13px">{{ room.desc }}</div>
+            </a>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- ░░░ ABOUT ░░░ -->
+    <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
+      <section style="padding:54px 0 0">
+        <div style="color:var(--ink-faint);font-size:14px;margin-bottom:10px"><span style="color:var(--accent)">&gt; [luk@arch ~]$</span> cat about.md</div>
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(34px,6vw,60px);margin:0 0 26px;letter-spacing:-.02em">about</h2>
+        <div style="max-width:660px;color:var(--ink-dim);font-size:15.5px;line-height:1.85">
+          <p style="margin:0 0 16px">I'm Lucas — a computer science student at the <span style="color:var(--ink)">University of Buenos Aires</span> and a full-stack developer who is happiest in a terminal with a tiling WM and a record spinning.</p>
+          <p style="margin:0 0 16px">I build things end-to-end: I designed, shipped, and self-host <span style="color:var(--accent)">PACT.AR</span> on my own cloud infra. When I'm not coding I'm digging through crates, reading doorstop fantasy novels, or tweaking my dotfiles for the hundredth time.</p>
+        </div>
+
+        <div style="margin-top:42px;color:var(--ink-faint);font-size:14px;margin-bottom:16px"><span style="color:var(--accent)">&gt; [luk@arch ~]$</span> ./projects</div>
+        <a href="https://pact.ar/" target="_blank" rel="noopener" onMouseEnter="{{ glitch }}" style="display:block;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:26px;max-width:760px;transition:border-color .18s ease" style-hover="border-color:var(--accent)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:26px;color:var(--accent)"><span data-gt="PACT.AR">PACT.AR</span></span>
+            <span style="color:var(--ink-faint);font-size:12px">production · self-hosted</span>
+          </div>
+          <p style="color:var(--ink-dim);margin:14px 0 18px;line-height:1.75;font-size:14.5px">A SaaS platform for creating and signing digital contracts that are legally valid under Argentine law 25.506. Paperless, fast, and accessible — built for freelancers and small businesses, with Mercado Pago handling subscription billing.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <sc-for list="{{ stack }}" as="t" hint-placeholder-count="5">
+              <span style="font-size:12px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:4px 10px">{{ t }}</span>
+            </sc-for>
+          </div>
+        </a>
+
+        <div style="margin-top:46px;color:var(--ink-faint);font-size:14px;margin-bottom:6px"><span style="color:var(--accent)">&gt; [luk@arch ~]$</span> ./spin_donut --ascii</div>
+        <pre data-donut="1" style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.05;color:var(--accent);text-shadow:0 0 12px var(--glow);white-space:pre;margin:8px 0 0;min-height:260px"></pre>
+      </section>
+    </sc-if>
+
+    <!-- ░░░ LIBRARY ░░░ -->
+    <sc-if value="{{ isLibrary }}" hint-placeholder-val="{{ false }}">
+      <section style="padding:54px 0 0">
+        <div style="color:var(--ink-faint);font-size:14px;margin-bottom:10px"><span style="color:var(--accent)">&gt; [luk@arch ~]$</span> cat reading.log <span style="color:var(--ink-faint)">| sort</span></div>
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(34px,6vw,60px);margin:0 0 6px;letter-spacing:-.02em">library</h2>
+        <p style="color:var(--ink-dim);margin:0 0 28px;font-size:14px">{{ bookCount }} books · honest personal ratings, ★ out of 5</p>
+        <div style="border-top:1px solid var(--line)">
+          <sc-for list="{{ library }}" as="b" hint-placeholder-count="10">
+            <div onMouseEnter="{{ glitch }}" style="display:grid;grid-template-columns:1fr auto;gap:14px;align-items:baseline;padding:11px 6px;border-bottom:1px solid var(--line-2)" style-hover="background:var(--surface)">
+              <div style="min-width:0">
+                <span data-gt="{{ b.book }}" style="color:var(--ink);font-size:15px">{{ b.book }}</span>
+                <span style="color:var(--ink-faint);font-size:13px"> — {{ b.author }}</span>
+              </div>
+              <div style="color:var(--accent);font-size:14px;letter-spacing:1px;white-space:nowrap">{{ b.stars }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- ░░░ BOOKMARKS ░░░ -->
+    <sc-if value="{{ isBookmarks }}" hint-placeholder-val="{{ false }}">
+      <section style="padding:54px 0 0">
+        <div style="color:var(--ink-faint);font-size:14px;margin-bottom:10px"><span style="color:var(--accent)">&gt; [luk@arch ~]$</span> cat bookmarks.txt</div>
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(34px,6vw,60px);margin:0 0 6px;letter-spacing:-.02em">bookmarks</h2>
+        <p style="color:var(--ink-dim);margin:0 0 28px;font-size:14px">corners of the web worth keeping. opens in a new tab.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">
+          <sc-for list="{{ bookmarks }}" as="bm" hint-placeholder-count="12">
+            <a href="{{ bm.url }}" target="_blank" rel="noopener" onMouseEnter="{{ glitch }}" style="display:flex;align-items:baseline;gap:10px;text-decoration:none;color:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);transition:border-color .15s ease,transform .15s ease" style-hover="border-color:var(--accent);transform:translateX(3px)">
+              <span style="color:var(--accent);font-size:13px">→</span>
+              <span data-gt="{{ bm.name }}" style="font-size:14px;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ bm.name }}</span>
+              <span style="color:var(--ink-faint);font-size:11px;white-space:nowrap">{{ bm.host }}</span>
+            </a>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- ░░░ COMPUTER ░░░ -->
+    <sc-if value="{{ isComputer }}" hint-placeholder-val="{{ false }}">
+      <section style="padding:54px 0 0">
+        <div style="color:var(--ink-faint);font-size:14px;margin-bottom:10px"><span style="color:var(--accent)">&gt; [luk@arch ~]$</span> fastfetch</div>
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(34px,6vw,60px);margin:0 0 28px;letter-spacing:-.02em">the machine</h2>
+        <div style="display:flex;flex-direction:column;gap:22px">
+          <sc-for list="{{ machines }}" as="m" hint-placeholder-count="2">
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;overflow-x:auto">
+              <div style="color:var(--ink-faint);font-size:12px;margin-bottom:14px">{{ m.caption }}</div>
+              <div style="display:flex;gap:26px;align-items:flex-start;min-width:0">
+                <pre style="margin:0;color:var(--accent);font-size:10px;line-height:1.04;text-shadow:0 0 10px var(--glow);white-space:pre;flex:0 0 auto">{{ m.logo }}</pre>
+                <pre style="margin:0;font-size:12.5px;line-height:1.5;white-space:pre;flex:1 1 auto;min-width:0">{{ m.body }}</pre>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- ░░░ MUSIC ░░░ -->
+    <sc-if value="{{ isMusic }}" hint-placeholder-val="{{ false }}">
+      <section style="padding:54px 0 0">
+        <div style="color:var(--ink-faint);font-size:14px;margin-bottom:10px"><span style="color:var(--accent)">&gt; [luk@arch my_music]$</span> ls shelf/</div>
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(34px,6vw,60px);margin:0 0 6px;letter-spacing:-.02em">the vinyl shelf</h2>
+        <p style="color:var(--ink-dim);margin:0 0 28px;font-size:14px">{{ vinylCount }} records · hover a sleeve to read the tracklist.</p>
+        <div style="position:relative">
+          <div style="position:fixed;inset:0;background:radial-gradient(circle at center, rgba(0,0,8,.45), rgba(0,0,4,.82));opacity:{{ dimOpacity }};pointer-events:none;transition:opacity .4s ease;z-index:8"></div>
+          <div style="display:flex;flex-wrap:wrap;gap:18px">
+            <sc-for list="{{ vinyls }}" as="v" hint-placeholder-count="8">
+              <article onMouseEnter="{{ v.onEnter }}" onMouseLeave="{{ onMusicLeave }}" style="position:relative;width:{{ v.aw }};height:{{ v.aw }};z-index:{{ v.z }}">
+                <div style="position:absolute;top:0;left:0;width:{{ v.fw }};height:{{ v.fw }};margin-top:{{ v.off }};margin-left:{{ v.off }};overflow:hidden;border-radius:3px;box-shadow:{{ v.shadow }};transition:width .42s cubic-bezier(.22,1,.36,1),height .42s cubic-bezier(.22,1,.36,1),margin .42s cubic-bezier(.22,1,.36,1),box-shadow .42s ease">
+                  <img src="{{ v.cover }}" alt="{{ v.title }}" loading="lazy" style="display:block;width:100%;height:100%;object-fit:cover"/>
+                  <div style="position:absolute;inset:0;display:flex;flex-direction:column;padding:20px;font-family:'JetBrains Mono',monospace;color:var(--accent-2);background:linear-gradient(180deg, rgba(8,6,2,.6), rgba(6,5,2,.92) 40%);opacity:{{ v.infoOp }};transition:opacity .35s ease;pointer-events:none">
+                    <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;line-height:1.1;color:var(--ink);text-shadow:0 0 14px var(--glow)">{{ v.title }}</div>
+                    <div style="font-size:12px;color:var(--ink-dim);margin:6px 0 10px;letter-spacing:.04em">{{ v.meta }}</div>
+                    <div style="font-size:11px;color:var(--accent);margin-bottom:5px">$ cat tracklist</div>
+                    <ol style="margin:0;padding:0;list-style:none;font-size:11.5px;line-height:1.5;overflow-y:auto;flex:1;min-height:0;border-top:1px solid var(--line)">
+                      <sc-for list="{{ v.tracklist }}" as="tr" hint-placeholder-count="6">
+                        <li style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="color:var(--ink-faint)">{{ tr.n }}</span> {{ tr.t }}</li>
+                      </sc-for>
+                    </ol>
+                  </div>
+                </div>
+              </article>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- ░░░ BLOG ░░░ -->
+    <sc-if value="{{ isBlog }}" hint-placeholder-val="{{ false }}">
+      <section style="padding:54px 0 0">
+        <div style="color:var(--ink-faint);font-size:14px;margin-bottom:10px"><span style="color:var(--accent)">&gt; [luk@arch my_blog]$</span> ls posts/</div>
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(34px,6vw,60px);margin:0 0 22px;letter-spacing:-.02em">blog</h2>
+        <div style="background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:40px;max-width:560px;text-align:center">
+          <div style="color:var(--accent);font-size:32px;margin-bottom:14px">{ }</div>
+          <p style="color:var(--ink);margin:0 0 8px;font-size:16px">work in progress.</p>
+          <p style="color:var(--ink-dim);margin:0;font-size:13.5px">no posts yet — I'm still deciding whether the first one is about tiling window managers or why analog still wins. check back soon.</p>
+        </div>
+      </section>
+    </sc-if>
+
+  </main>
+
+  <!-- ░░░ STATUS BAR ░░░ -->
+  <footer style="position:fixed;bottom:0;left:0;width:100%;z-index:30;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:linear-gradient(0deg, rgba(20,17,13,0.94), rgba(20,17,13,0.6));border-top:1px solid var(--line)">
+    <div style="max-width:1120px;margin:0 auto;padding:9px 26px;display:flex;align-items:center;gap:14px">
+      <span style="color:var(--accent);font-size:12.5px;flex:0 0 auto">●</span>
+      <div style="flex:1 1 auto;min-width:0;font-size:12.5px;color:var(--ink-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+        <span ref="{{ tickerRef }}"></span><span style="color:var(--accent);animation:blink 1.1s step-end infinite">▮</span>
+      </div>
+      <a href="https://github.com/lnagel0/personal-website" target="_blank" rel="noopener" onMouseEnter="{{ glitch }}" style="flex:0 0 auto;color:var(--ink-dim);text-decoration:none;font-size:12.5px" style-hover="color:var(--accent)"><span data-gt="src ↗">src ↗</span></a>
+    </div>
+  </footer>
+
+  <!-- ░░░ COMMAND PALETTE ░░░ -->
+  <sc-if value="{{ paletteOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePalette }}" style="position:fixed;inset:0;z-index:60;background:rgba(8,6,3,.62);backdrop-filter:blur(3px);display:flex;align-items:flex-start;justify-content:center;padding-top:13vh">
+      <div onClick="{{ stop }}" style="width:min(560px,92vw);background:var(--bg-2);border:1px solid var(--line);border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.6);overflow:hidden">
+        <div style="display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--line)">
+          <span style="color:var(--accent);font-size:15px">$</span>
+          <input data-pal-input="1" value="{{ q }}" onInput="{{ onQuery }}" onKeyDown="{{ onPaletteKey }}" placeholder="jump to… (↑↓ to move, ↵ to open)" style="flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:inherit;font-size:15px" />
+          <span style="color:var(--ink-faint);font-size:11px;border:1px solid var(--line);border-radius:4px;padding:2px 6px">esc</span>
+        </div>
+        <div style="max-height:54vh;overflow-y:auto;padding:8px">
+          <sc-for list="{{ palItems }}" as="it" hint-placeholder-count="6">
+            <div onClick="{{ it.onClick }}" onMouseEnter="{{ it.onHover }}" style="display:flex;align-items:center;gap:12px;padding:10px 13px;border-radius:9px;cursor:pointer;background:{{ it.bg }}">
+              <span style="color:var(--accent);font-size:13px;width:16px;text-align:center;flex:0 0 auto">{{ it.icon }}</span>
+              <span style="flex:1;color:var(--ink);font-size:14px">{{ it.name }}</span>
+              <span style="color:var(--ink-faint);font-size:12px">{{ it.path }}</span>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:18px 13px;color:var(--ink-faint);font-size:13px">no matches. try “music”, “theme”, or “github”.</div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ░░░ BOOT ░░░ -->
+  <sc-if value="{{ booting }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ skipBoot }}" style="position:fixed;inset:0;z-index:90;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer">
+      <div style="width:min(620px,90vw)">
+        <pre ref="{{ bootRef }}" style="margin:0;font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.7;color:var(--ink-dim);white-space:pre-wrap"></pre>
+        <div style="margin-top:22px;color:var(--ink-faint);font-size:12px">click or press any key to skip</div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{},&quot;defaultTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;amber&quot;,&quot;green&quot;,&quot;midnight&quot;],&quot;default&quot;:&quot;amber&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Vibe&quot;},&quot;enableBoot&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Vibe&quot;},&quot;enableStars&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Vibe&quot;},&quot;enableScanlines&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Vibe&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.rootRef = React.createRef();
+    this.quoteRef = React.createRef();
+    this.authorRef = React.createRef();
+    this.clockRef = React.createRef();
+    this.tickerRef = React.createRef();
+    this.npRef = React.createRef();
+    this.canvasRef = React.createRef();
+    this.paletteInputRef = React.createRef();
+    this.bootRef = React.createRef();
+
+    this.THEMES = {
+      amber:    {accent:'#e7ab53', accent2:'#f3c57e', glow:'rgba(231,171,83,0.42)',  ink:'#1a1207', title:'amber · cozy'},
+      green:    {accent:'#74e6a0', accent2:'#9af0bd', glow:'rgba(116,230,160,0.40)', ink:'#06160d', title:'phosphor green'},
+      midnight: {accent:'#7fb2ff', accent2:'#a8ccff', glow:'rgba(127,178,255,0.40)', ink:'#08122a', title:'midnight'}
+    };
+
+    const booted = (typeof sessionStorage!=='undefined') && sessionStorage.getItem('booted')==='1';
+    const enableBoot = this.props.enableBoot ?? true;
+    let view = 'home';
+    if (typeof location!=='undefined' && location.hash){
+      const h = location.hash.replace('#','');
+      if (['about','library','bookmarks','computer','music','blog'].includes(h)) view = h;
+    }
+    let theme = this.props.defaultTheme || (typeof localStorage!=='undefined' && localStorage.getItem('theme')) || 'amber';
+    if (!this.THEMES[theme]) theme = 'amber';
+
+    this.state = {
+      booting: enableBoot && !booted,
+      view,
+      theme,
+      paletteOpen:false,
+      q:'',
+      sel:0,
+      musicHover:null,
+      isMobile: (typeof window!=='undefined' && window.innerWidth<680)
+    };
+
+    this.GC = '!<>-_\\/[]{}—=+*^?#________'.split('');
+    this.typed = ''; this.typedAuthor = '';
+
+    this.QUOTES = JSON.parse(`[{"author":"Marcus Aurelius","quote":"Your mind will be like its habitual thoughts; for the soul becomes dyed with the color of its thoughts."},{"author":"Marcus Aurelius","quote":"The happiness of your life depends upon the quality of your thoughts."},{"author":"Jorge Luis Borges","quote":"La duda es uno de los nombres de la inteligencia."},{"author":"John Greenleaf Whittier","quote":"Of all sad words of tongue or pen, the saddest are these, 'it might have been.'"},{"author":"African proverb","quote":"When an old man dies, a library burns to the ground."},{"author":"Heraclitus","quote":"No man ever steps in the same river twice, for it's not the same river and he's not the same man."},{"author":"Futurama","quote":"When you do things right, people won't be sure you've done anything at all."},{"author":"The Lord of the Rings","quote":"I do not love the bright sword for its sharpness, nor the arrow for its swiftness, nor the warrior for his glory. I love only that which they defend."},{"author":"Fight Club","quote":"It's only after we've lost everything that we're free to do anything."},{"author":"Unknown","quote":"Biology is really Chemistry. Chemistry is really Physics. Physics is really Math. Math is really hard."},{"author":"Aristotle","quote":"It is the mark of an educated mind to be able to entertain a thought without accepting it."},{"author":"Charles Darwin","quote":"It is not the strongest of the species that survives, nor the most intelligent that survives. It is the one that is most adaptable to change."},{"author":"Margaret Loxton","quote":"If you choose not to find joy in the snow, you will have less joy but still the same amount of snow."},{"author":"Charles Dickens","quote":"You have been in every line I have ever read."},{"author":"James S. A. Corey","quote":"If life transcends death; then I will seek for you there. If not, then there too."},{"author":"Laura Donney","quote":"What is grief, if not love persevering?"},{"author":"Antoine de Saint Exupery","quote":"Life has taught us that love does not consist in gazing at each other but in looking outward together in the same direction."},{"author":"Dr. Seuss","quote":"You know you're in love when you can't fall asleep because reality is finally better than your dreams."},{"author":"William Faulkner","quote":"Perhaps they were right putting love into books. Perhaps it could not live anywhere else."},{"author":"The Lord of the Rings","quote":"I would rather share one lifetime with you than face all the ages of this world alone."},{"author":"Mark Twain","quote":"You go to heaven for the climate and hell for the company."},{"author":"Unknown","quote":"Knowledge speaks but wisdom listens."},{"author":"Unknown","quote":"Be the things that you loved the most about the people who are gone."},{"author":"Albert Einstein","quote":"You can't blame gravity for falling in love."},{"author":"Unknown","quote":"Data can't hold a heartbeat."},{"author":"Cormac McCarthy","quote":"You'll never know what worse luck your bad luck has saved you from."},{"author":"Unknown","quote":"If you think you hate everyone, have something to eat. If you think everyone hates you, have a nap."},{"author":"John Steinbeck","quote":"I shall revenge myself in the cruelest way you can imagine. I shall forget it."},{"author":"Soren Kierkegaard","quote":"Do it, don't do it - You will regret both."},{"author":"Unknown","quote":"You'll never find same person twice. Not even in the same person."},{"author":"Henry Hazlitt","quote":"A problem properly stated is a problem partly solved."},{"author":"Unknown","quote":"Smart people don't know everything. Simply how and where to find answers."},{"author":"John Wooden","quote":"The true test of a man's character is what he does when no one is watching."},{"author":"Seneca","quote":"For those who do not know what port they're sailing to, no wind is favourable."},{"author":"Persian proverb","quote":"This too shall pass."},{"author":"Jorge Luis Borges","quote":"Lo que realmente valoras es lo que extranas."},{"author":"Oscar Wilde","quote":"Be yourself; everyone else is already taken."},{"author":"Isaac Asimov","quote":"After all, all devices have their dangers. The discovery of speech introduced communication and lies."},{"author":"Fiodor Dostoievsky","quote":"Si Dios no existe, todo esta permitido."},{"author":"Pablo Neruda","quote":"Podran cortar todas las flores, pero no podran detener la primavera."}]`);
+    this.LIBRARY = JSON.parse(`[{"author":"Edward Snowden","book":"Permanent Record","rating":5},{"author":"Abelson & Sussman","book":"Structure and Interpretation of Computer Programs","rating":4},{"author":"Jorge Luis Borges","book":"El Libro de Arena","rating":5},{"author":"Jorge Luis Borges","book":"Ficciones","rating":5},{"author":"Andy Weir","book":"The Martian","rating":4},{"author":"George Orwell","book":"1984","rating":5},{"author":"Robert Greene","book":"The 48 Laws of Power","rating":3},{"author":"Stephen Hawking","book":"A Brief History of Time","rating":5},{"author":"Stephen Hawking","book":"Black Holes","rating":4},{"author":"Mortimer J. Adler","book":"How to Read a Book","rating":3},{"author":"Ray Bradbury","book":"The Pedestrian","rating":5},{"author":"Albert Camus","book":"The Stranger","rating":4},{"author":"Suzanne Collins","book":"The Hunger Games #1","rating":3},{"author":"Viktor Frankl","book":"Man's Search for Meaning","rating":3},{"author":"William Golding","book":"Lord of the Flies","rating":5},{"author":"Mark Manson","book":"The Subtle Art of Not Giving a F*ck","rating":3},{"author":"Carl Sagan","book":"Contact","rating":4},{"author":"Augusto Salvatto","book":"La era del malestar","rating":3},{"author":"J. R. R. Tolkien","book":"The Hobbit","rating":5},{"author":"J. R. R. Tolkien","book":"The Fellowship of the Ring","rating":5},{"author":"J. R. R. Tolkien","book":"The Two Towers","rating":5},{"author":"J. R. R. Tolkien","book":"The Return of the King","rating":5},{"author":"Brandon Sanderson","book":"The Way of Kings","rating":5},{"author":"Brandon Sanderson","book":"Words of Radiance","rating":5},{"author":"Brandon Sanderson","book":"Oathbringer","rating":5},{"author":"Brandon Sanderson","book":"Rhythm of War","rating":3},{"author":"Brandon Sanderson","book":"Elantris","rating":4},{"author":"Brandon Sanderson","book":"Mistborn: The Final Empire","rating":4},{"author":"Brandon Sanderson","book":"Mistborn: The Well of Ascension","rating":4},{"author":"Brandon Sanderson","book":"Mistborn: The Hero of Ages","rating":4},{"author":"Brandon Sanderson","book":"Warbreaker","rating":4},{"author":"Brandon Sanderson","book":"Edgedancer","rating":4},{"author":"Brandon Sanderson","book":"Dawnshard","rating":4},{"author":"J. K. Rowling","book":"Harry Potter #1","rating":3},{"author":"J. K. Rowling","book":"Harry Potter #2","rating":3},{"author":"Isaac Asimov","book":"Foundation","rating":4},{"author":"Isaac Asimov","book":"Foundation and Empire","rating":4},{"author":"Isaac Asimov","book":"Second Foundation","rating":4},{"author":"Walter Isaacson","book":"Steve Jobs","rating":5},{"author":"Walter Isaacson","book":"Elon Musk","rating":5},{"author":"Jorge Luis Borges","book":"El Aleph","rating":5},{"author":"Julio Verne","book":"Veinte mil leguas de viaje submarino","rating":0},{"author":"Aldous Huxley","book":"Brave New World","rating":4},{"author":"Henry Hazlitt","book":"Economics in One Lesson","rating":3},{"author":"Yukio Mishima","book":"The Sailor Who Fell from Grace with the Sea","rating":0},{"author":"Cervantes","book":"Don Quijote de la Mancha","rating":5}]`);
+    this.BOOKMARKS = JSON.parse(`[{"name":"Wormhole","url":"https://wormhole.app/"},{"name":"Station307","url":"https://www.station307.com/#/"},{"name":"MagLit","url":"https://maglit.me/"},{"name":"DevDocs","url":"https://devdocs.io/"},{"name":"Vim shortcuts","url":"https://vim.rtorr.com/"},{"name":"Radio Garden","url":"https://radio.garden/"},{"name":"WHOIS","url":"https://who.is/"},{"name":"Learn X in Y Minutes","url":"https://learnxinyminutes.com/"},{"name":"megathread","url":"https://rentry.org/megathread"},{"name":"cs.rin.ru","url":"https://cs.rin.ru/"},{"name":"Vimm's Lair","url":"https://vimm.net/"},{"name":"Hugging Face","url":"https://huggingface.co/"},{"name":"Roadmaps","url":"https://roadmap.sh/"},{"name":"WTF Happened in 1971?","url":"https://wtfhappenedin1971.com/"},{"name":"Peelopaalu links","url":"https://peelopaalu.neocities.org/"},{"name":"CLOUDHIKER","url":"https://cloudhiker.net/"},{"name":"MC:SG map archive","url":"https://www.mc-sg-archives.com/mcsgmcgamer"},{"name":"Privacy links","url":"https://www.privacytools.io/"},{"name":"Mo Jardinico","url":"https://mojardinico.com/"},{"name":"Quickshell","url":"https://quickshell.org/"},{"name":"Cameron's World","url":"https://cameronsworld.net/"},{"name":"0x0.st","url":"https://0x0.st/"},{"name":"My GitHub Stars","url":"https://github.com/lucasn0?tab=stars"},{"name":"Drawn CABA","url":"https://caba.nicolaspoore.com/"}]`);
+    this.VINYLS = JSON.parse(`[{"cover":"images/kanye-west-mbdtf.jpg","title":"My Beautiful Dark Twisted Fantasy","artist":"Kanye West","year":2010,"duration":"74:45","tracklist":["Dark Fantasy","Gorgeous","Power","All of the Lights (Interlude)","All of the Lights","Monster","So Appalled","Devil In a New Dress","Runaway","Hell of a Life","Blame Game","Lost In the World","Who Will Survive In America","See Me Now"]},{"cover":"images/led-zeppelin-iv.jpg","title":"Led Zeppelin IV","artist":"Led Zeppelin","year":1971,"duration":"42:36","tracklist":["Black Dog","Rock and Roll","The Battle of Evermore","Stairway to Heaven","Misty Mountain Hop","Four Sticks","Going to California","When the Levee Breaks"]},{"cover":"images/arctic-monkeys-wpsiatwin.jpg","title":"Whatever People Say I Am, That's What I'm Not","artist":"Arctic Monkeys","year":2006,"duration":"41:19","tracklist":["The View from the Afternoon","I Bet You Look Good on the Dancefloor","Fake Tales of San Francisco","Dancing Shoes","You Probably Couldn't See for the Lights but You Were Looking Straight at Me","Still Take You Home","Riot Van","Red Light Indicates Doors Are Secured","Mardy Bum","Perhaps Vampires Is a Bit Strong But...","When the Sun Goes Down","From the Ritz to the Rubble","A Certain Romance"]},{"cover":"images/nas-illmatic.jpg","title":"Illmatic","artist":"Nas","year":1994,"duration":"39:50","tracklist":["The Genesis","N.Y. State of Mind","Life's a Bitch","The World Is Yours","Halftime","Memory Lane (Sittin' in da Park)","One Love","One Time 4 Your Mind","Represent","It Ain't Hard to Tell"]},{"cover":"images/arctic-monkeys-fwn.jpg","title":"Favourite Worst Nightmare","artist":"Arctic Monkeys","year":2007,"duration":"37:38","tracklist":["Brianstorm","Teddy Picker","D Is for Dangerous","Balaclava","Fluorescent Adolescent","Only Ones Who Know","Do Me a Favour","This House Is a Circus","If You Were There, Beware","The Bad Thing","Old Yellow Bricks","505"]},{"cover":"images/daft-punk-discovery.png","title":"Discovery","artist":"Daft Punk","year":2001,"duration":"61:08","tracklist":["One More Time","Aerodynamic","Digital Love","Harder Better Faster Stronger","Crescendolls","Nightvision","Superheroes","High Life","Something About Us","Voyager","Veridis Quo","Short Circuit","Face to Face","Too Long"]},{"cover":"images/daft-punk-ram.png","title":"Random Access Memories","artist":"Daft Punk","year":2013,"duration":"74:34","tracklist":["Give Life Back to Music","The Game of Love","Giorgio by Moroder","Within","Instant Crush","Lose Yourself to Dance","Touch","Get Lucky","Beyond","Motherboard","Fragments of Time","Doin' it Right","Contact"]},{"cover":"images/gustavo-cerati-bocanada.jpg","title":"Bocanada","artist":"Gustavo Cerati","year":1999,"duration":"69:25","tracklist":["Tabu","Engana","Bocanada","Puente","Rio Babel","Beautiful","Perdonar Es Divino","Verbo Carne","Raiz","Y Si el Humo Esta en Foco...","Paseo Inmoral","Aqui & Ahora (Los Primeros 3 Minutos)","Aqui & Ahora (y Despues)","Alma","Balsa"]},{"cover":"images/kanye-west-808s.jpg","title":"808s & Heartbreak","artist":"Kanye West","year":2008,"duration":"52:05","tracklist":["Say You Will","Welcome To Heartbreak","Heartless","Amazing","Love Lockdown","Paranoid","RoboCop","Street Lights","Bad News","See You In My Nightmares","Coldest Winter","Pinocchio Story (Live From Singapore)"]},{"cover":"images/kanye-west-graduation.jpg","title":"Graduation","artist":"Kanye West","year":2007,"duration":"54:30","tracklist":["Good Morning","Champion","Stronger","I Wonder","Good Life","Can't Tell Me Nothing","Barry Bonds","Drunk and Hot Girls","Flashing Lights","Everything I Am","The Glory","Homecoming","Big Brother","Good Night"]},{"cover":"images/pescado-rabioso-artaud.jpg","title":"Artaud","artist":"Pescado Rabioso","year":1973,"duration":"36:20","tracklist":["Todas las Hojas Son del Viento","Cementerio Club","Por","Supercheria","La Sed Verdadera","Cantata de Puentes Amarillos","Bajan","A Starosta, el Idiota","Las Habladurias del Mundo"]},{"cover":"images/pink-floyd-animals.jpg","title":"Animals","artist":"Pink Floyd","year":1977,"duration":"41:41","tracklist":["Pigs on the Wing, Part 1","Dogs","Pigs (Three Different Ones)","Sheep","Pigs on the Wing, Part 2"]},{"cover":"images/more-life.jpg","title":"More Life","artist":"Drake","year":2017,"duration":"81:39","tracklist":["Free Smoke","No Long Talk","Passionfruit","Jorja Interlude","Get It Together","Madiba Riddim","Blem","4422","Gyalchester","Skepta Interlude","Portland","Sacrifices","Nothings Into Somethings","Teenage Fever","Kmt","Lose You","Can't Have Everything","Glow","Since Way Back","Fake Love","Ice Melts","Do Not Disturb"]},{"cover":"images/late-registration.jpg","title":"Late Registration","artist":"Kanye West","year":2005,"duration":"70:02","tracklist":["Wake Up Mr. West","Heard 'Em Say","Touch the Sky","Gold Digger","Skit #1","Drive Slow","My Way Home","Crack Music","Roses","Bring Me Down","Addiction","Skit #2","Diamonds from Sierra Leone [Remix]","We Major","Skit #3","Hey Mama","Celebration","Skit #4","Gone","Diamonds from Sierra Leone","Late"]},{"cover":"images/ella-louis.jpg","title":"The Complete Ella and Louis on Verve","artist":"Ella Fitzgerald","year":1997,"duration":"219:02","tracklist":["Can't We Be Friends?","Isn't This a Lovely Day?","Moonlight in Vermont","They Can't Take That Away From Me","Under a Blanket of Blue","Tenderly","A Foggy Day","Stars Fell on Alabama","Cheek to Cheek","The Nearness of You","April in Paris","Don't Be That Way","Makin' Whoopee","They All Laughed","Comes Love","Autumn in New York","Let's Do It","Stompin' at the Savoy","I Won't Dance","Gee Baby, Ain't I Good to You?","Let's Call the Whole Thing Off","These Foolish Things","I've Got My Love to Keep Me Warm","Willow Weep for Me","A Fine Romance","Love Is Here to Stay","I Get a Kick Out of You","Learnin' the Blues","Summertime","Bess, You Is My Woman Now","It Ain't Necessarily So"]},{"cover":"images/ahi-vamos.jpg","title":"Ahi Vamos","artist":"Gustavo Cerati","year":2006,"duration":"56:34","tracklist":["Al Fin Sucede","La Excepcion","Uno Entre 1000","Caravana","Adios","Me Quedo Aqui","Lago en el Cielo","Dios Nos Libre","Otra Piel","Medium","Bomba de Tiempo","Crimen","Jugo de Luna"]},{"cover":"images/24k-magic.png","title":"24K Magic","artist":"Bruno Mars","year":2016,"duration":"33:33","tracklist":["24K Magic","Chunky","Perm","That's What I Like","Versace On The Floor","Straight Up & Down","Calling All My Lovelies","Finesse","Too Good to Say Goodbye"]},{"cover":"images/divididos-felicidad.jpg","title":"Divididos Por la Felicidad","artist":"Sumo","year":1985,"duration":"38:24","tracklist":["La Rubia Tarada","Mula Plateada","No Acabes","Regtest","El Reggae de Paz y Amor","Debede","Mejor No Hablar de Ciertas Cosas","Divididos Por la Felicidad","No Duermas Mas","Kaya"]},{"cover":"images/in-rainbows.png","title":"In Rainbows","artist":"Radiohead","year":2007,"duration":"42:39","tracklist":["15 Step","Bodysnatchers","Nude","Weird Fishes / Arpeggi","All I Need","Faust Arp","Reckoner","House of Cards","Jigsaw Falling Into Place","Videotape"]},{"cover":"images/mezzanine.png","title":"Mezzanine","artist":"Massive Attack","year":1998,"duration":"62:00","tracklist":["Angel","Risingson","Teardrop","Inertia Creeps","Exchange","Dissolved Girl","Man Next Door","Black Milk","Mezzanine","Group Four","(Exchange)"]},{"cover":"images/physical-graffity.jpg","title":"Physical Graffiti","artist":"Led Zeppelin","year":1975,"duration":"82:54","tracklist":["Custard Pie","The Rover","In My Time of Dying","Houses of the Holy","Trampled Under Foot","Kashmir","In the Light","Bron-Yr-Aur","Down By the Seaside","Ten Years Gone","Night Flight","The Wanton Song","Boogie With Stu","Black Country Woman","Sick Again"]},{"cover":"images/the-low-end-theory.jpg","title":"The Low End Theory","artist":"A Tribe Called Quest","year":1991,"duration":"48:04","tracklist":["Excursions","Buggin' Out","Rap Promoter","Butter","Verses From the Abstract","Show Business","Vibes and Stuff","The Infamous Date Rape","Check the Rhime","Everything Is Fair","Jazz (We've Got)","Skypager","What?","Scenario"]},{"cover":"images/sueño-stereo.jpg","title":"Sueno Stereo","artist":"Soda Stereo","year":1995,"duration":"53:02","tracklist":["Ella Uso Mi Cabeza Como un Revolver","Disco Eterno","Zoom","Ojo de la Tormenta","Efecto Doppler","Paseando Por Roma","Pasos","Angel Electrico","Crema de Estrellas","Planta","X Playo","Moire"]},{"cover":"images/sgt-pepper.jpg","title":"Sgt. Pepper's Lonely Hearts Club Band","artist":"The Beatles","year":1967,"duration":"39:52","tracklist":["Sgt. Pepper's Lonely Hearts Club Band","With a Little Help From My Friends","Lucy In the Sky with Diamonds","Getting Better","Fixing a Hole","She's Leaving Home","Being For the Benefit of Mr. Kite!","Within You Without You","When I'm Sixty-Four","Lovely Rita","Good Morning Good Morning","Sgt. Pepper's (Reprise)","A Day In the Life"]}]`);
+
+    this.ROOMS = [
+      {label:'about',     path:'~/about',     desc:'who i am · what i build', tag:'dir', kind:'view', to:'about'},
+      {label:'music',     path:'~/music',     desc:'the vinyl shelf',          tag:'dir', kind:'view', to:'music'},
+      {label:'library',   path:'~/library',   desc:'books & honest ratings',   tag:'dir', kind:'view', to:'library'},
+      {label:'bookmarks', path:'~/bookmarks', desc:'links worth keeping',      tag:'dir', kind:'view', to:'bookmarks'},
+      {label:'machine',   path:'~/machine',   desc:'what i type on',           tag:'dir', kind:'view', to:'computer'},
+      {label:'blog',      path:'~/blog',      desc:'thoughts, eventually',     tag:'dir', kind:'view', to:'blog'},
+      {label:'github',    path:'gh://lucasn0',     desc:'code & dotfiles',         tag:'ext', kind:'ext', href:'https://github.com/lucasn0'},
+      {label:'linkedin',  path:'in/nagel-lucas',   desc:'the professional mask',   tag:'ext', kind:'ext', href:'https://www.linkedin.com/in/nagel-lucas/'},
+      {label:'steam',     path:'id/fardes1',       desc:'hours i won’t admit to',  tag:'ext', kind:'ext', href:'https://steamcommunity.com/id/fardes1/'},
+      {label:'movies',    path:'imdb/ratings',     desc:'films, rated',            tag:'ext', kind:'ext', href:'https://www.imdb.com/user/p.ivmfcxmxlais7jxw4c2hzk3opm/ratings/?ref_=up_hd_ql_urrat'},
+      {label:'email',     path:'mailto:lnagel',    desc:'say hello',               tag:'ext', kind:'ext', href:'mailto:lnagel@dc.uba.ar'},
+      {label:'youtube',   path:'yt://watch',       desc:'a timeless classic',      tag:'ext', kind:'ext', href:'https://www.youtube.com/watch?v=dQw4w9WgXcQ'}
+    ];
+
+    this.STACK = ['Next.js / React','Tailwind','Node.js / Express','PostgreSQL','Oracle Cloud','Coolify + GH Actions'];
+
+    this.MACHINES = [
+      {
+        caption:'// workstation — luk@archlinux',
+        logo:"                   -\`\n                  .o+\`\n                 \`ooo/\n                \`+oooo:\n               \`+oooooo:\n               -+oooooo+:\n             \`/:-:++oooo+:\n            \`/++++/+++++++:\n           \`/++++++++++++++:\n          \`/+++ooooooooooooo/\`\n         ./ooosssso++osssssso+\`\n        .oossssso-\`\`\`\`/ossssss+\`\n       -osssssso.      :ssssssso.\n      :osssssss/        osssso+++.\n     /ossssssss/        +ssssooo/-\n   \`/ossssso+/:-        -:/+osssso+-\n  \`+sso+:-\`                 \`.-/+oso:\n \`++:.                           \`-/+/\n .\`                                 \`/",
+        body:"luk@archlinux\n-------------\nOS: Arch Linux x86_64\nKernel: 7.0.13-arch1-1\nPackages: 1316 (pacman)\nShell: zsh 5.9.1\nResolution: 1920x1200, 2560x1440\nDE: KDE Plasma 6.7.1\nWM: KWin (Wayland)\nTheme: Breeze (Dark)\nTerminal: konsole 26.4.2\nTerm Font: JetBrainsMono Nerd Font 11\nCPU: AMD Ryzen 5 5600T (12) @ 4.576GHz\nGPU: AMD Radeon RX 6800 XT\nMemory: 9915MiB / 15899MiB"
+      },
+      {
+        caption:'// laptop — luk@macair',
+        logo:"                    'c.\n                 ,xNMM.\n               .OMMMMo\n               OMMM0,\n     .;loddo:' loolloddol;.\n   cKMMMMMMMMMMNWMMMMMMMMMM0:\n .KMMMMMMMMMMMMMMMMMMMMMMMWd.\n XMMMMMMMMMMMMMMMMMMMMMMMX.\n;MMMMMMMMMMMMMMMMMMMMMMMM:\n:MMMMMMMMMMMMMMMMMMMMMMMM:\n.MMMMMMMMMMMMMMMMMMMMMMMMX.\n kMMMMMMMMMMMMMMMMMMMMMMMMWd.\n .XMMMMMMMMMMMMMMMMMMMMMMMMMMk\n  .XMMMMMMMMMMMMMMMMMMMMMMMMK.\n    kMMMMMMMMMMMMMMMMMMMMMMd\n     ;KMMMMMMMWXXWMMMMMMMk.\n       .cooc*\"    \"*coo'.",
+        body:"luk@macair\n----------\nOS: macOS Tahoe 26.5.1 arm64\nHost: MacBook Air (13\", M5, 2026)\nKernel: Darwin 25.5.0\nPackages: 43 (brew), 6 (cask)\nShell: zsh 5.9\nDisplay: 2940x1912 @ 2x in 14\"\nWM: Quartz Compositor\nTheme: Liquid Glass\nTerminal: ghostty 1.3.1\nTerm Font: JetBrainsMono Nerd Font 13\nCPU: Apple M5 (4+6) @ 4.46 GHz\nGPU: Apple M5 (8) @ 1.58 GHz\nMemory: 10.10 / 16.00 GiB (63%)\nBattery: 86% (9h 31m) [Discharging]"
+      }
+    ];
+
+    this.BOOT = [
+      {h:'<span style="color:var(--accent)">[ boot ]</span> luk@arch — personal system v3.0'},
+      {h:'<span style="color:var(--accent)">[ ok ]</span>   mounting /home/luk'},
+      {h:'<span style="color:var(--accent)">[ ok ]</span>   loading dotfiles &amp; rc'},
+      {h:'<span style="color:var(--accent)">[ ok ]</span>   spawning window manager'},
+      {h:'<span style="color:var(--accent)">[ ok ]</span>   opening last.fm uplink'},
+      {h:'<span style="color:var(--accent)">[ ok ]</span>   seeding the starfield'},
+      {h:'<span style="color:var(--ink)">ready.</span> welcome back, friend. ✦'}
+    ];
+
+    this.glitch = this.glitch.bind(this);
+    this.openPalette = this.openPalette.bind(this);
+    this.closePalette = this.closePalette.bind(this);
+    this.onQuery = this.onQuery.bind(this);
+    this.onPaletteKey = this.onPaletteKey.bind(this);
+    this.shuffleQuote = this.shuffleQuote.bind(this);
+    this.goHome = ()=>this.go('home');
+    this.skipBoot = this.skipBoot.bind(this);
+    this.onMusicLeave = ()=>this.setState({musicHover:null});
+    this.stop = (e)=>e.stopPropagation();
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onResize = ()=>{ const m=window.innerWidth<680; if(m!==this.state.isMobile) this.setState({isMobile:m}); };
+  }
+
+  componentDidMount(){
+    this.applyTheme(this.state.theme);
+    if ((this.props.enableStars ?? true)) this.initSky();
+    this.startClock();
+    this.startTicker();
+    this.fetchNowPlaying();
+    this._np = setInterval(()=>this.fetchNowPlaying(), 30000);
+    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('resize', this.onResize);
+    if (this.state.booting) this.runBoot();
+    else this.enterView(this.state.view, null);
+  }
+
+  componentWillUnmount(){
+    clearInterval(this._clock); clearInterval(this._tick); clearInterval(this._np);
+    clearInterval(this._donut); clearInterval(this._type); clearTimeout(this._bootTO);
+    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('resize', this.onResize);
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if (prevState.theme !== this.state.theme) this.applyTheme(this.state.theme);
+    if (prevState.booting && !this.state.booting) this.enterView(this.state.view, null);
+    if (prevState.view !== this.state.view) this.enterView(this.state.view, prevState.view);
+    if (!this.state.paletteOpen && this.state.view==='home'){
+      const q=document.querySelector('[data-quote]'), a=document.querySelector('[data-author]');
+      if (q && this.typed) q.textContent = this.typed;
+      if (a && this.typedAuthor) a.textContent = this.typedAuthor;
+    }
+    if (this.state.paletteOpen && !prevState.paletteOpen && this.paletteInputRef.current){
+      this.paletteInputRef.current.focus();
+    }
+  }
+
+  // ── theme ──
+  applyTheme(name){
+    const t = this.THEMES[name]; if (!t) return;
+    const r = document.documentElement.style;
+    r.setProperty('--accent', t.accent);
+    r.setProperty('--accent-2', t.accent2);
+    r.setProperty('--glow', t.glow);
+    r.setProperty('--accent-ink', t.ink);
+    try{ localStorage.setItem('theme', name); }catch(e){}
+  }
+  setTheme(name){ this.setState({theme:name}); this.applyTheme(name); }
+  cycleTheme(){
+    const order = Object.keys(this.THEMES);
+    const i = order.indexOf(this.state.theme);
+    const next = order[(i+1)%order.length];
+    this.setState({theme: next}); this.applyTheme(next);
+  }
+
+  // ── navigation ──
+  go(view){
+    this.setState({view, paletteOpen:false, q:'', sel:0});
+    try{ if (view==='home') history.replaceState(null,'',location.pathname); else location.hash = view; }catch(e){}
+    window.scrollTo({top:0});
+    setTimeout(()=>this.enterView(view), 70);
+  }
+  enterView(view, prev){
+    clearTimeout(this._enterTO);
+    if (view!=='about') this.stopDonut();
+    if (view!=='home') clearInterval(this._type);
+    this._enterTO = setTimeout(()=>{
+      if (view==='about') this.startDonut();
+      if (view==='home') this.startQuotes();
+    }, 70);
+  }
+
+  // ── boot ──
+  runBoot(){
+    const host = this.bootRef.current; if (!host){ this.finishBoot(); return; }
+    host.innerHTML=''; let i=0;
+    const step = ()=>{
+      if (i>=this.BOOT.length){ this._bootTO=setTimeout(()=>this.finishBoot(), 600); return; }
+      const d=document.createElement('div');
+      d.style.cssText='opacity:0;animation:bootline .3s ease forwards';
+      d.innerHTML=this.BOOT[i].h; host.appendChild(d); i++;
+      this._bootTO=setTimeout(step, 220);
+    };
+    step();
+  }
+  skipBoot(){ this.finishBoot(); }
+  finishBoot(){
+    clearTimeout(this._bootTO);
+    if (!this.state.booting) return;
+    try{ sessionStorage.setItem('booted','1'); }catch(e){}
+    this.setState({booting:false});
+    setTimeout(()=>this.enterView(this.state.view), 70);
+  }
+
+  // ── clock + ticker ──
+  startClock(){
+    const tick=()=>{ const el=document.querySelector('[data-clock]'); if(el){ el.textContent = new Date().toTimeString().slice(0,8); } };
+    tick(); this._clock=setInterval(tick,1000);
+  }
+  uptime(){
+    const start=new Date('2003-03-27T20:05:00');
+    const diff=Date.now()-start.getTime();
+    const dd=Math.floor(diff/86400000);
+    const hh=Math.floor(diff%86400000/3600000);
+    const mm=Math.floor(diff%3600000/60000);
+    return `alive for ${dd.toLocaleString()} days, ${hh}h ${mm}m`;
+  }
+  startTicker(){
+    this._npText='now listening to silence';
+    let flip=0;
+    const upd=()=>{ if(this.tickerRef.current){ this.tickerRef.current.textContent = flip%2===0 ? this.uptime() : this._npText; flip++; }
+      const npEl=document.querySelector('[data-np]'); if(npEl && this._npRaw) npEl.textContent=this._npRaw; };
+    upd(); this._tick=setInterval(upd,6000);
+  }
+  async fetchNowPlaying(){
+    try{
+      const key=atob('MTlhMTgyNTc1Nzg0MDRkOTI0MTY0YzY2Y2Q4ZTM2ZTU=');
+      const r=await fetch(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=fardes1&api_key=${key}&format=json&limit=1`);
+      const data=await r.json();
+      const t=data.recenttracks.track[0];
+      const txt=`${t.artist['#text']} — ${t.name}`;
+      this._npText=`now listening to ${txt}`; this._npRaw=txt;
+      const el=document.querySelector('[data-np]'); if(el) el.textContent=txt;
+    }catch(e){
+      this._npText='now listening to silence'; this._npRaw='silence (offline)';
+      const el=document.querySelector('[data-np]'); if(el) el.textContent=this._npRaw;
+    }
+  }
+
+  // ── quotes typewriter ──
+  startQuotes(){ this.shuffleQuote(); }
+  shuffleQuote(){
+    clearInterval(this._type);
+    const q=document.querySelector('[data-quote]'), a=document.querySelector('[data-author]');
+    if(!q||!a){ if(this.state.view==='home'){ clearTimeout(this._qRetry); this._qRetry=setTimeout(()=>this.shuffleQuote(),80); } return; }
+    const item=this.QUOTES[Math.floor(Math.random()*this.QUOTES.length)];
+    const full=`"${item.quote}"`; const auth=`— ${item.author}`;
+    q.textContent=''; a.textContent=''; this.typed=''; this.typedAuthor='';
+    let i=0;
+    this._type=setInterval(()=>{
+      if(i<full.length){ this.typed=full.slice(0,i+1); q.textContent=this.typed; i++; }
+      else{ clearInterval(this._type); a.textContent=auth; this.typedAuthor=auth; }
+    },28);
+  }
+
+  // ── glitch ──
+  glitch(e){
+    const host=e.currentTarget;
+    const el=host.querySelector('[data-gt]'); if(!el) return;
+    const orig=el.getAttribute('data-gt');
+    if(host._gi) clearInterval(host._gi);
+    let it=0;
+    host._gi=setInterval(()=>{
+      el.textContent=orig.split('').map((c,i)=> i<it?orig[i]:(/\s/.test(c)?c:this.GC[Math.floor(Math.random()*this.GC.length)])).join('');
+      if(it>=orig.length){ clearInterval(host._gi); el.textContent=orig; }
+      it+=1/3;
+    },28);
+  }
+
+  // ── sky: stars + moon ──
+  initSky(){
+    if(window.__sky) return; window.__sky=true;
+    const body=document.body;
+    const moon=document.createElement('div'); moon.className='moon';
+    moon.style.top='86px'; moon.style.right='46px'; moon.style.cursor='grab';
+    body.appendChild(moon);
+    const phase=this.moonPhase(new Date());
+    moon.title='moon phase: '+this.phaseName(phase);
+    const w=46, shadow='rgba(10,8,20,0.96)';
+    moon.style.background='#fffbe6';
+    if(phase<0.5){ const o=w*(1-phase/0.5); moon.style.boxShadow=`inset ${o}px 0 0 0 ${shadow}`; if(phase<0.04) moon.style.background=shadow; }
+    else{ const o=w*((phase-0.5)/0.5); moon.style.boxShadow=`inset -${o}px 0 0 0 ${shadow}`; }
+    // drag
+    let drag=false,sx,sy;
+    moon.addEventListener('mousedown',(e)=>{ drag=true; moon.style.cursor='grabbing'; moon.style.transition='none'; const r=moon.getBoundingClientRect(); sx=e.clientX-r.left; sy=e.clientY-r.top; moon.style.right='auto'; moon.style.left=r.left+'px'; moon.style.top=r.top+'px'; e.preventDefault(); });
+    document.addEventListener('mousemove',(e)=>{ if(!drag) return; moon.style.left=(e.clientX-sx)+'px'; moon.style.top=(e.clientY-sy)+'px'; });
+    document.addEventListener('mouseup',()=>{ if(!drag) return; drag=false; moon.style.cursor='grab'; moon.style.transition='all 1s cubic-bezier(.22,1,.36,1)'; moon.style.left=(window.innerWidth-46-46)+'px'; moon.style.top='86px'; setTimeout(()=>{ moon.style.transition=''; moon.style.left=''; moon.style.top=''; moon.style.right='46px'; },1000); });
+    for(let i=0;i<110;i++){
+      const s=document.createElement('div'); s.className='star';
+      s.style.left=Math.random()*100+'vw'; s.style.top=Math.random()*100+'vh';
+      const sz=Math.random()*2+1; s.style.width=sz+'px'; s.style.height=sz+'px';
+      s.style.animationDuration=(Math.random()*3+2)+'s'; s.style.animationDelay=(Math.random()*5)+'s';
+      body.appendChild(s);
+    }
+  }
+  moonPhase(date){ const epoch=new Date('2000-01-06T18:14:00Z').getTime(); const days=(date.getTime()-epoch)/86400000; return (days%29.5305882)/29.5305882; }
+  phaseName(p){ if(p<0.03||p>0.97) return 'new moon'; if(p<0.22) return 'waxing crescent'; if(p<0.28) return 'first quarter'; if(p<0.47) return 'waxing gibbous'; if(p<0.53) return 'full moon'; if(p<0.72) return 'waning gibbous'; if(p<0.78) return 'last quarter'; return 'waning crescent'; }
+
+  // ── donut ──
+  startDonut(){
+    this.stopDonut();
+    const cv=document.querySelector('[data-donut]');
+    if(!cv){ if(this.state.view==='about'){ clearTimeout(this._dRetry); this._dRetry=setTimeout(()=>this.startDonut(),80); } return; }
+    const W=80,H=22,area=W*H,xo=40,yo=11,ir=2,r1=90,r2=314,fov=5,k=28;
+    let A=0,B=0; const shades='.,-~:;=!*#$@'.split('');
+    this._donut=setInterval(()=>{
+      const b=Array(area).fill(' '), z=Array(area).fill(0);
+      for(let j=0;j<6.28;j+=6.28/r1){ for(let i=0;i<6.28;i+=6.28/r2){
+        const c=Math.sin(i),d=Math.cos(j),e=Math.sin(A),f=Math.sin(j),g=Math.cos(A),h=d+ir;
+        const D=1/(c*h*e+f*g+fov),l=Math.cos(i),m=Math.cos(B),n=Math.sin(B),t=c*h*g-f*e;
+        const x=(xo+k*D*(l*h*m-t*n))<<0, y=(yo+(k/2)*D*(l*h*n+t*m))<<0, o=(x+W*y)<<0;
+        const sc=(((shades.length+1)*2)/3)<<0;
+        const N=(sc*((f*e-c*d*g)*m-c*d*e-f*g-l*d*n))<<0;
+        if(H>y&&y>0&&x>0&&W>x&&D>z[o]){ z[o]=D; b[o]=shades[N>0?N:0]; }
+      }}
+      let out=''; for(let r=0;r<H;r++){ out+=b.slice(r*W,r*W+W).join('')+'\n'; }
+      cv.textContent=out; A+=0.05; B+=0.025;
+    },40);
+  }
+  stopDonut(){ if(this._donut){ clearInterval(this._donut); this._donut=null; } }
+
+  // ── palette ──
+  openPalette(){ this.setState({paletteOpen:true, q:'', sel:0}); setTimeout(()=>{ const el=document.querySelector('[data-pal-input]'); if(el) el.focus(); },70); }
+  closePalette(){ this.setState({paletteOpen:false}); }
+  onQuery(e){ this.setState({q:e.target.value, sel:0}); }
+  paletteList(){
+    const acts=[
+      ...this.ROOMS.map(r=>({name:r.label, path:r.path, icon: r.kind==='ext'?'↗':'›', kind:r.kind, to:r.to, href:r.href})),
+      {name:'home', path:'~/', icon:'⌂', action:()=>this.go('home')},
+      {name:'shuffle quote', path:'rand()', icon:'⟳', action:()=>{ this.go('home'); setTimeout(()=>this.shuffleQuote(),40); }},
+      {name:'cycle theme', path:'theme++', icon:'◐', action:()=>this.cycleTheme()},
+      {name:'theme: amber', path:'cozy', icon:'●', action:()=>this.setTheme('amber')},
+      {name:'theme: green', path:'phosphor', icon:'●', action:()=>this.setTheme('green')},
+      {name:'theme: midnight', path:'cool', icon:'●', action:()=>this.setTheme('midnight')}
+    ];
+    const q=this.state.q.trim().toLowerCase();
+    if(!q) return acts;
+    return acts.filter(a=>(a.name+' '+a.path).toLowerCase().includes(q));
+  }
+  runItem(it){
+    if(it.action){ it.action(); this.closePalette(); return; }
+    if(it.kind==='ext'){ window.open(it.href,'_blank','noopener'); this.closePalette(); return; }
+    this.go(it.to);
+  }
+  onPaletteKey(e){
+    const list=this.paletteList();
+    if(e.key==='ArrowDown'||(e.key==='j'&&e.ctrlKey)){ e.preventDefault(); this.setState({sel:Math.min(this.state.sel+1,list.length-1)}); }
+    else if(e.key==='ArrowUp'||(e.key==='k'&&e.ctrlKey)){ e.preventDefault(); this.setState({sel:Math.max(this.state.sel-1,0)}); }
+    else if(e.key==='Enter'){ e.preventDefault(); if(list[this.state.sel]) this.runItem(list[this.state.sel]); }
+    else if(e.key==='Escape'){ this.closePalette(); }
+  }
+
+  // ── global keys ──
+  onKeyDown(e){
+    if(this.state.booting){ this.finishBoot(); return; }
+    if(this.state.paletteOpen) return; // palette handles its own
+    const tag=(e.target.tagName||'').toLowerCase();
+    if(tag==='input'||tag==='textarea') return;
+    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); this.openPalette(); return; }
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    if(e.key==='/'){ e.preventDefault(); this.openPalette(); return; }
+    if(e.key==='Escape'){ if(this.state.view!=='home') this.go('home'); return; }
+    if(e.key==='t'){ this.cycleTheme(); return; }
+    const map={a:'about',m:'music',l:'library',b:'bookmarks',c:'computer',g:'blog',h:'home'};
+    if(map[e.key]) this.go(map[e.key]);
+  }
+
+  stars(n){ return '★'.repeat(n)+'☆'.repeat(5-n); }
+
+  renderVals(){
+    const v=this.state.view;
+    const themeDots = Object.keys(this.THEMES).map(name=>{
+      const t=this.THEMES[name]; const active=this.state.theme===name;
+      return { color:t.accent, ring: active?t.accent:'transparent', glow: active?t.glow:'transparent', title:t.title, onClick:()=>this.setTheme(name) };
+    });
+    const rooms=this.ROOMS.map(r=>({
+      label:r.label, path:r.path, desc:r.desc, tag:r.tag,
+      href: r.kind==='ext'? r.href : '#'+(r.to==='home'?'':r.to),
+      target: r.kind==='ext'? '_blank' : undefined,
+      onClick: r.kind==='ext'? null : (e)=>{ e.preventDefault(); this.go(r.to); }
+    }));
+    const library=this.LIBRARY.map(b=>({ book:b.book, author:b.author, stars: b.rating>0? this.stars(b.rating) : '— n/a' }));
+    const bookmarks=this.BOOKMARKS.map(b=>{ let host=''; try{ host=new URL(b.url).hostname.replace('www.',''); }catch(e){ host=''; } return {name:b.name, url:b.url, host}; });
+
+    const hover=this.state.musicHover;
+    const mob=this.state.isMobile;
+    const base = mob?'150px':'200px';
+    const expand = mob?'300px':'430px';
+    const offV = mob?'-75px':'-115px';
+    const vinyls=this.VINYLS.map((a)=>{
+      const open=hover===a.title;
+      return {
+        title:a.title, cover:a.cover, meta:`${a.artist} · ${a.year} · ${a.duration}`,
+        tracklist:a.tracklist.map((t,i)=>({ n:String(i+1).padStart(2,'0'), t })),
+        aw: base,
+        fw: open?expand:base, off: open?offV:'0px',
+        infoOp: open?1:0, z: open?20:1,
+        shadow: open? '0 0 0 1px var(--glow), 16px 20px 44px rgba(0,0,0,.7)' : '4px 4px 0 rgba(0,0,0,.5)',
+        onEnter: ()=>this.setState({musicHover:a.title})
+      };
+    });
+
+    const machines=this.MACHINES.map(m=>({caption:m.caption, logo:m.logo, body:m.body}));
+
+    const pl=this.paletteList();
+    const palItems=pl.map((it,i)=>({
+      name:it.name, path:it.path, icon:it.icon,
+      bg: i===this.state.sel? 'var(--surface-2)' : 'transparent',
+      onClick:()=>this.runItem(it),
+      onHover:()=>this.setState({sel:i})
+    }));
+
+    return {
+      rootRef:this.rootRef, quoteRef:this.quoteRef, authorRef:this.authorRef,
+      clockRef:this.clockRef, tickerRef:this.tickerRef, npRef:this.npRef,
+      canvasRef:this.canvasRef, paletteInputRef:this.paletteInputRef, bootRef:this.bootRef,
+      booting:this.state.booting,
+      isMobile: this.state.isMobile, showTopExtras: !this.state.isMobile,
+      scanlines: this.props.enableScanlines ?? false,
+      isHome:v==='home', isAbout:v==='about', isLibrary:v==='library',
+      isBookmarks:v==='bookmarks', isComputer:v==='computer', isMusic:v==='music', isBlog:v==='blog',
+      paletteOpen:this.state.paletteOpen, q:this.state.q,
+      noResults: this.state.paletteOpen && palItems.length===0,
+      themeDots, rooms, library, bookmarks, vinyls, machines, palItems,
+      stack:this.STACK,
+      bookCount:this.LIBRARY.length, vinylCount:this.VINYLS.length,
+      dimOpacity: hover?1:0,
+      glitch:this.glitch, goHome:this.goHome, openPalette:this.openPalette,
+      closePalette:this.closePalette, onQuery:this.onQuery, onPaletteKey:this.onPaletteKey,
+      shuffleQuote:this.shuffleQuote, skipBoot:this.skipBoot, onMusicLeave:this.onMusicLeave, stop:this.stop
+    };
+  }
+}
+</script>
+</body>
+</html>
