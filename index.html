@@ -438,6 +438,7 @@ class Component extends DCLogic {
     this.onMusicLeave = ()=>this.setState({musicHover:null});
     this.stop = (e)=>e.stopPropagation();
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.onPopState = this.onPopState.bind(this);
     this.onResize = ()=>{ const m=window.innerWidth<680; if(m!==this.state.isMobile) this.setState({isMobile:m}); };
   }
 
@@ -450,6 +451,7 @@ class Component extends DCLogic {
     this._np = setInterval(()=>this.fetchNowPlaying(), 30000);
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('resize', this.onResize);
+    window.addEventListener('popstate', this.onPopState);
     if (this.state.booting) this.runBoot();
     else this.enterView(this.state.view, null);
   }
@@ -459,6 +461,7 @@ class Component extends DCLogic {
     clearInterval(this._donut); clearInterval(this._type); clearTimeout(this._bootTO);
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('popstate', this.onPopState);
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -496,7 +499,14 @@ class Component extends DCLogic {
   // ── navigation ──
   go(view){
     this.setState({view, paletteOpen:false, q:'', sel:0});
-    try{ if (view==='home') history.replaceState(null,'',location.pathname); else location.hash = view; }catch(e){}
+    try{ if (view==='home') history.pushState(null,'',location.pathname); else history.pushState(null,'','#'+view); }catch(e){}
+    window.scrollTo({top:0});
+    setTimeout(()=>this.enterView(view), 70);
+  }
+  onPopState(){
+    const h=(typeof location!=='undefined')?location.hash.replace('#',''):'';
+    const view=['about','projects','library','bookmarks','computer','music'].includes(h)?h:'home';
+    this.setState({view, paletteOpen:false, q:'', sel:0});
     window.scrollTo({top:0});
     setTimeout(()=>this.enterView(view), 70);
   }
