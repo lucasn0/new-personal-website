@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>luq</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -503,7 +505,12 @@ class Component extends DCLogic {
     window.scrollTo({top:0});
     setTimeout(()=>this.enterView(view), 70);
   }
+  setTitle(view){
+    const slugs = {about:'about_me', projects:'projects', computer:'machine', music:'music', library:'library', bookmarks:'bookmarks'};
+    try{ document.title = (view && view!=='home' && slugs[view]) ? 'luq/'+slugs[view] : 'luq'; }catch(e){}
+  }
   enterView(view, prev){
+    this.setTitle(view);
     clearTimeout(this._enterTO);
     if (view!=='about') this.stopDonut();
     if (view!=='home') clearInterval(this._type);
