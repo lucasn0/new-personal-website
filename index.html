@@ -115,7 +115,7 @@ body{
           Lucas<br/><span style="color:var(--accent);text-shadow:0 0 38px var(--glow)">Nagel</span>
         </h1>
         <p style="max-width:560px;font-size:16px;color:var(--ink-dim);margin:0 0 38px;line-height:1.7">
-          software engineer across <span style="color:var(--ink)">full-stack development, cloud infrastructure, and systems</span>. computer science @ uba. currently building a custom crm/erp for 24/7 maritime inspection operations; creator of <span style="color:var(--accent)">pact.ar</span>. <span style="color:var(--ink-faint)">from argentina, usually with a terminal open and a record spinning.</span>
+          software engineer across <span style="color:var(--ink)">full-stack development, cloud infrastructure, and systems</span>. computer science @ uba. currently building a <a href="#" onClick="{{ goProjects }}" style="color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--ink-faint)" style-hover="color:var(--accent);text-decoration-color:var(--accent)">custom crm/erp</a> for 24/7 maritime inspection operations; creator of <a href="https://pact.ar/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--glow)" style-hover="text-decoration-color:var(--accent)">pact.ar</a>. <span style="color:var(--ink-faint)">from argentina, usually with a terminal open and a record spinning.</span>
         </p>
 
         <div onClick="{{ shuffleQuote }}" style="cursor:pointer;max-width:620px;border-left:2px solid var(--accent);padding:14px 0 14px 20px;margin-bottom:8px;user-select:none">
@@ -252,7 +252,7 @@ body{
       <section style="padding:22px 0 0">
         <div style="color:var(--ink-faint);font-size:14px;margin-bottom:10px"><span style="color:var(--accent)">&gt; [luk@arch ~]$</span> ls projects/ --featured</div>
         <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(34px,6vw,60px);margin:0 0 6px;letter-spacing:-.02em">projects</h2>
-        <p style="color:var(--ink-dim);margin:0 0 30px;font-size:14px">things I've designed, built, and shipped end-to-end.</p>
+        <p style="color:var(--ink-dim);margin:0 0 30px;font-size:14px">commercial systems and products I've designed, built, and shipped end-to-end.</p>
 
         <article style="background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:900px">
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
@@ -429,6 +429,7 @@ class Component extends DCLogic {
     this.onPaletteKey = this.onPaletteKey.bind(this);
     this.shuffleQuote = this.shuffleQuote.bind(this);
     this.goHome = ()=>this.go('home');
+    this.goProjects = (e)=>{ if(e) e.preventDefault(); this.go('projects'); };
     this.skipBoot = this.skipBoot.bind(this);
     this.onMusicLeave = ()=>this.setState({musicHover:null});
     this.stop = (e)=>e.stopPropagation();
@@ -782,7 +783,7 @@ class Component extends DCLogic {
       projectHighlights:['legally-valid e-signatures under Argentine law 25.506','Mercado Pago subscription billing, built in','self-provisioned & self-managed on Oracle Cloud infra'],
       bookCount:this.LIBRARY.length, vinylCount:this.VINYLS.length,
       dimOpacity: hover?1:0,
-      glitch:this.glitch, goHome:this.goHome, openPalette:this.openPalette,
+      glitch:this.glitch, goHome:this.goHome, goProjects:this.goProjects, openPalette:this.openPalette,
       closePalette:this.closePalette, onQuery:this.onQuery, onPaletteKey:this.onPaletteKey,
       shuffleQuote:this.shuffleQuote, skipBoot:this.skipBoot, onMusicLeave:this.onMusicLeave, stop:this.stop
     };
