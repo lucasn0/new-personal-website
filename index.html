@@ -618,7 +618,7 @@ class Component extends DCLogic {
   async fetchNowPlaying(){
     try{
       const key=atob('MTlhMTgyNTc1Nzg0MDRkOTI0MTY0YzY2Y2Q4ZTM2ZTU=');
-      const r=await fetch(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=fardes1&api_key=${key}&format=json&limit=1`);
+      const r=await fetch(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=tilteronni&api_key=${key}&format=json&limit=1`);
       const data=await r.json();
       const t=data.recenttracks.track[0];
       const txt=`${t.artist['#text']} · ${t.name}`;
