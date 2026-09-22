@@ -15,7 +15,7 @@
   --sky-top:#03041a; --sky-bottom:#0b1140; --panel:#060822;
   --ink:#ecebf3; --ink-dim:#a2a4c3; --ink-faint:#63668f;
   --line:rgba(236,235,243,0.2); --line-2:rgba(236,235,243,0.09);
-  --accent:#ffe600; --accent-2:#fff176; --glow:rgba(255,230,0,0.3); --accent-ink:#0b0d22;
+  --accent:#ff8a1f; --accent-2:#ffb066; --glow:rgba(255,138,31,0.3); --accent-ink:#0b0d22;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,"DejaVu Sans Mono","Liberation Mono",monospace;
 }
 *{box-sizing:border-box}
@@ -504,8 +504,8 @@ class Component extends DCLogic {
       {label:'youtube',   path:'yt://watch',       desc:'i’m so sorry',      tag:'ext', kind:'ext', href:'https://www.youtube.com/watch?v=dQw4w9WgXcQ'}
     ];
 
-    // star colours, hot to cool (O B A F G K M), softened to sit on the night sky. one per ~/ entry, in order
-    this.STAR_COLORS = ['#8ea6ff','#9fb2ff','#b3c1ff','#c6cff8','#f1e3b6','#f7d898','#facb85','#f8bc7a','#f5ab72','#f09a6c','#e98a67','#e07b63'];
+    // cyan → turquoise → mint → lemon, softened to sit on the night sky. one per ~/ entry, in order
+    this.ROOM_COLORS = ['#5fe3ff','#5de8f0','#5eeadf','#62ecd0','#6cefc0','#7ef2b0','#93f4a6','#a8f59c','#bef693','#d2f78b','#e4f884','#f3f97e'];
 
     this.CARGO_STACK = ['Next.js','FastAPI','PostgreSQL','AWS EC2','RDS + S3','Linux'];
     this.PACT_STACK = ['Next.js','React','Node.js','Express','PostgreSQL','Oracle Cloud','GitHub Actions'];
@@ -928,7 +928,7 @@ class Component extends DCLogic {
   renderVals(){
     const v=this.state.view;
     const rooms=this.ROOMS.map((r,i)=>({
-      name: r.label, slash: r.kind==='ext'? '' : '/', desc:r.desc, color: this.STAR_COLORS[i % this.STAR_COLORS.length],
+      name: r.label, slash: r.kind==='ext'? '' : '/', desc:r.desc, color: this.ROOM_COLORS[i % this.ROOM_COLORS.length],
       cls: r.kind==='ext'? 'room' : 'room dir',
       href: r.kind==='ext'? r.href : '#'+(r.to==='home'?'':r.to),
       target: r.kind==='ext'? '_blank' : undefined,
