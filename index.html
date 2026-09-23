@@ -45,6 +45,9 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
     radial-gradient(ellipse 150% 30% at 50% 102%, rgba(255,186,110,.2), transparent 70%),
     linear-gradient(0deg, rgba(255,150,70,.14), transparent 38%),
     linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%)}
+.star-card{position:fixed;left:0;top:0;z-index:25;pointer-events:none;padding:7px 10px;border-radius:4px;background:rgba(3,4,26,.85);border:1px solid var(--line);
+  font-size:11.5px;line-height:1.45;white-space:nowrap;color:var(--ink-dim);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.star-card b{display:block;color:var(--ink);font-size:12.5px}
 .nebula{position:fixed;left:-10vw;top:-10vh;width:120vw;height:120vh;z-index:0;pointer-events:none;transform-origin:50% 50%;will-change:transform;
 }
 body::after{content:"";position:fixed;inset:0;z-index:100;pointer-events:none;opacity:.045;
@@ -999,6 +1002,45 @@ class Component extends DCLogic {
       {name:'pleiades · seven sisters', size:.55, stars:[[3.791,24.105,2.87,'#d6e2ff'],[3.819,24.053,3.62,'#d6e2ff'],[3.748,24.113,3.7,'#d6e2ff'],[3.764,24.368,3.87,'#d6e2ff'],[3.772,23.948,4.18,'#d6e2ff'],[3.753,24.467,4.3,'#d6e2ff'],[3.82,24.137,5.05,'#d6e2ff'],[3.747,24.289,5.45,'#d6e2ff']],
         lines:[]},
     ];
+    // per-star facts for the hover tooltip, in the same order as each constellation's stars:
+    // [proper name or null, designation, what it is, distance in light years or null when it's too uncertain to quote]
+    const INFO={
+      'orion':[['betelgeuse','α ori','red supergiant',550],['rigel','β ori','blue supergiant',860],['bellatrix','γ ori','blue giant',250],['saiph','κ ori','blue supergiant',650],
+        ['alnitak','ζ ori','blue supergiant',1260],['alnilam','ε ori','blue supergiant',2000],['mintaka','δ ori','blue giant, multiple system',1200],['meissa','λ ori','blue giant',1100],
+        [null,'μ ori','white multiple star',150],[null,'ξ ori','blue-white star',null],[null,'ν ori','blue-white star',null],[null,'χ¹ ori','sun-like star',28],[null,'χ² ori','blue supergiant',null],
+        [null,'π¹ ori','white star',116],[null,'π² ori','white star',194],['tabit','π³ ori','yellow-white dwarf',26],[null,'π⁴ ori','blue giant',null],[null,'π⁵ ori','blue giant',null],[null,'π⁶ ori','orange giant',null]],
+      'ursa major · big dipper':[['dubhe','α uma','orange giant',123],['merak','β uma','white star',79],['phecda','γ uma','white star',84],['megrez','δ uma','white star',81],
+        ['alioth','ε uma','white star',83],['mizar','ζ uma','white star, paired with alcor',83],['alkaid','η uma','blue-white star',104]],
+      'cassiopeia':[['caph','β cas','yellow-white giant',55],['schedar','α cas','orange giant',228],['navi','γ cas','blue-white variable star',550],['ruchbah','δ cas','white eclipsing binary',99],['segin','ε cas','blue-white giant',440]],
+      'crux · southern cross':[['acrux','α cru','blue-white multiple star',320],['mimosa','β cru','blue giant',280],['gacrux','γ cru','red giant',88],['imai','δ cru','blue-white subgiant',345],['ginan','ε cru','orange giant',230],
+        ['rigil kentaurus','α cen','sun-like triple, the nearest star system',4.37],['hadar','β cen','blue giant',390]],
+      'scorpius':[['antares','α sco','red supergiant, the scorpion\'s heart',550],['acrab','β sco','blue-white multiple star',400],['dschubba','δ sco','blue subgiant',400],['fang','π sco','blue-white multiple star',590],
+        ['alniyat','σ sco','blue giant',700],['paikauhale','τ sco','blue dwarf',470],['larawag','ε sco','orange giant',64],['xamidimura','μ¹ sco','blue eclipsing binary',500],
+        [null,'ζ² sco','orange giant',132],[null,'η sco','yellow-white giant',73],['sargas','θ sco','yellow-white giant',300],[null,'ι¹ sco','yellow-white supergiant',null],
+        ['girtab','κ sco','blue giant',480],['shaula','λ sco','blue subgiant, the stinger',570],['lesath','υ sco','blue subgiant',580]],
+      'leo':[['regulus','α leo','blue-white star',79],[null,'η leo','white supergiant',null],['algieba','γ leo','orange giant binary',130],['adhafera','ζ leo','yellow-white giant',270],
+        ['rasalas','μ leo','orange giant',130],[null,'ε leo','yellow giant',250],['zosma','δ leo','white star',58],['chertan','θ leo','white star',165],['denebola','β leo','white star, the lion\'s tail',36]],
+      'cygnus · northern cross':[['deneb','α cyg','white supergiant',2600],['sadr','γ cyg','yellow-white supergiant',1800],[null,'η cyg','orange giant',140],
+        ['albireo','β cyg','gold-and-blue double star',430],['aljanah','ε cyg','orange giant',72],['fawaris','δ cyg','blue-white giant, triple',165]],
+      'ursa minor · little dipper':[['polaris','α umi','yellow supergiant, the north star',430],['yildun','δ umi','white star',172],[null,'ε umi','yellow giant binary',347],[null,'ζ umi','white star',null],
+        ['kochab','β umi','orange giant',131],['pherkad','γ umi','white giant',487],[null,'η umi','yellow-white star',97]],
+      'lyra':[['vega','α lyr','white star',25],[null,'ε lyr','the double double',162],[null,'ζ¹ lyr','white star',152],[null,'δ² lyr','red giant',null],['sulafat','γ lyr','blue-white giant',620],['sheliak','β lyr','eclipsing binary',960]],
+      'canis major':[['sirius','α cma','white star, brightest in the night sky',8.6],['mirzam','β cma','blue giant',490],[null,'ι cma','blue-white giant',null],[null,'θ cma','orange giant',250],
+        [null,'ο² cma','blue supergiant',null],['wezen','δ cma','yellow-white supergiant',1600],['adhara','ε cma','blue giant',430],['furud','ζ cma','blue-white star',360],['aludra','η cma','blue supergiant',2000]],
+      'gemini':[['castor','α gem','sextuple star system',51],['pollux','β gem','orange giant with a planet',34],[null,'τ gem','orange giant',300],['mebsuta','ε gem','yellow supergiant',840],
+        ['tejat','μ gem','red giant',230],['propus','η gem','red giant',350],[null,'υ gem','red giant',250],['wasat','δ gem','white star',60],['mekbuda','ζ gem','yellow supergiant, pulsating',1200],
+        ['alhena','γ gem','white subgiant',109],[null,'ι gem','yellow giant',120],[null,'λ gem','white star',100],['alzirr','ξ gem','yellow-white star',57]],
+      'taurus':[['aldebaran','α tau','orange giant, the bull\'s eye',65],['elnath','β tau','blue giant',134],['tianguan','ζ tau','blue giant, by the crab nebula',440],[null,'θ² tau','white giant in the hyades',150],
+        ['prima hyadum','γ tau','orange giant in the hyades',154],['secunda hyadum','δ¹ tau','orange giant in the hyades',153],['ain','ε tau','orange giant with a planet',147],
+        [null,'λ tau','eclipsing binary',480],[null,'ο tau','yellow giant',290],['alcyone','η tau','brightest of the pleiades',444]],
+      'pegasus · great square':[['markab','α peg','blue-white giant',133],['scheat','β peg','red giant',196],['algenib','γ peg','blue subgiant',390],['alpheratz','α and','blue-white star, shared with andromeda',97],
+        ['enif','ε peg','orange supergiant, the horse\'s nose',690],['homam','ζ peg','blue-white star',204],['biham','θ peg','white star',92],['matar','η peg','yellow giant',214],['sadalbari','μ peg','orange giant',106],[null,'λ peg','yellow giant',null]],
+      'sagittarius · the teapot':[['alnasl','γ² sgr','orange giant, the spout',97],['kaus media','δ sgr','orange giant',350],['kaus australis','ε sgr','blue-white giant',143],['kaus borealis','λ sgr','orange giant, the lid',78],
+        [null,'φ sgr','blue-white giant',230],['ascella','ζ sgr','white binary',88],['nunki','σ sgr','blue-white star',228],[null,'τ sgr','orange giant',120]],
+      'pleiades · seven sisters':[['alcyone','η tau','blue giant',444],['atlas','27 tau','blue giant',444],['electra','17 tau','blue giant',444],['maia','20 tau','blue giant',444],
+        ['merope','23 tau','blue subgiant',444],['taygeta','19 tau','blue-white star',444],['pleione','28 tau','blue-white shell star',444],['celaeno','16 tau','blue-white star',444]],
+    };
+    for(const c of CONST) c.info=INFO[c.name];
     const project=(c)=>{
       const D=Math.PI/180, pts=c.stars.map(([ra,dec])=>[ra*15*D,dec*D]);
       // centre on the circular mean of the stars
@@ -1013,6 +1055,10 @@ class Component extends DCLogic {
       return {xy:xy.map(([x,y])=>[x-(minx+maxx)/2, y-(miny+maxy)/2]), w:maxx-minx, h:maxy-miny};
     };
     const PROJ=CONST.map(project);
+    // the hover card is html so it sits above the page's text, not under it like the canvas
+    const card=document.createElement('div'); card.className='star-card'; card.style.opacity='0';
+    card.append(document.createElement('b'),document.createElement('span'));
+    document.body.appendChild(card);
     const monoFont=(getComputedStyle(document.documentElement).getPropertyValue('--mono')||'monospace').trim();
     let lastC=-1, shown=null, still=0, mouse=null;
     const isSky=(el)=>{
@@ -1023,7 +1069,13 @@ class Component extends DCLogic {
     if(!calm){
       window.addEventListener('mousemove',e=>{
         mouse={x:e.clientX,y:e.clientY,el:e.target}; still=0;
-        if(shown && shown.out===null) shown.out=0;   // start fading
+        if(!shown || shown.out!==null) return;
+        // moving around inside the constellation keeps it up (so its stars can be hovered); leaving it fades it
+        const B=shown.box;
+        if(e.clientX<B[0]||e.clientX>B[2]||e.clientY<B[1]||e.clientY>B[3]){ shown.out=0; shown.hover=-1; return; }
+        let best=-1, bd=16*16;
+        shown.pts.forEach(([x,y],i)=>{ const d=(x-e.clientX)**2+(y-e.clientY)**2; if(d<bd){ bd=d; best=i; } });
+        shown.hover=best;
       });
       document.addEventListener('mouseleave',()=>{ mouse=null; if(shown && shown.out===null) shown.out=0; });
     }
@@ -1037,10 +1089,13 @@ class Component extends DCLogic {
           const sc=box/Math.max(P.w,P.h);
           const hw=P.w*sc/2+24, hh=P.h*sc/2+34;
           const cx=Math.max(hw,Math.min(SW-hw,mouse.x)), cy=Math.max(hh,Math.min(SH-hh-20,mouse.y));
-          shown={c:CONST[i], pts:P.xy.map(([x,y])=>[cx+x*sc,cy+y*sc]), labelY:cy+P.h*sc/2+26, cx, age:0, out:null};
+          const pts=P.xy.map(([x,y])=>[cx+x*sc,cy+y*sc]);
+          const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]), pad=40;
+          shown={c:CONST[i], pts, labelY:cy+P.h*sc/2+26, cx, age:0, out:null, hover:-1,
+            box:[Math.min(...xs)-pad, Math.min(...ys)-pad, Math.max(...xs)+pad, cy+P.h*sc/2+26+pad]};
         }
       }
-      if(!shown) return;
+      if(!shown){ if(card.style.opacity!=='0') card.style.opacity='0'; return; }
       const S=shown; S.age+=dt;
       if(S.out!==null){ S.out+=dt; if(S.out>=0.7){ shown=null; return; } }
       const fade=S.out!==null?1-S.out/0.7:1;
@@ -1073,6 +1128,20 @@ class Component extends DCLogic {
         sctx.font=`12px ${monoFont}`; sctx.textAlign='center'; sctx.textBaseline='top';
         sctx.fillText(S.c.name,S.cx,S.labelY);
       }
+      // hovered star: a ring and a little card with what it is
+      if(S.hover>=0 && S.c.info && S.age>0.5){
+        const [x,y]=S.pts[S.hover], [nm,des,kind,ly]=S.c.info[S.hover];
+        const r=Math.max(1,Math.min(3.4,1.2+(3.6-S.c.stars[S.hover][2])*0.6));
+        sctx.globalAlpha=0.8*fade; sctx.strokeStyle=S.c.stars[S.hover][3]||'#ffffff'; sctx.lineWidth=1;
+        sctx.beginPath(); sctx.arc(x,y,r+6,0,Math.PI*2); sctx.stroke();
+        const l1=nm||des, l2=[nm?des:null, kind, ly!=null?`${ly.toLocaleString('en-US')} ly`:null].filter(Boolean).join(' · ');
+        const key=S.c.name+S.hover;
+        if(card.dataset.k!==key){ card.dataset.k=key; card.firstChild.textContent=l1; card.lastChild.textContent=l2; }
+        const w=card.offsetWidth, h=card.offsetHeight;
+        let bx=x+r+14; if(bx+w>SW-8) bx=x-r-14-w;
+        const by=Math.max(8,Math.min(SH-h-8,y-h/2));
+        card.style.transform=`translate(${bx}px,${by}px)`; card.style.opacity=fade;
+      } else if(card.style.opacity!=='0'){ card.style.opacity='0'; card.dataset.k=''; }
       sctx.globalAlpha=1;
     };
 
