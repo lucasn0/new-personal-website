@@ -185,10 +185,18 @@ h2.title{font-size:24px;line-height:1.2;font-weight:700;margin:0 0 6px}
 /* whatever scrolls behind the footer gets blurred and dimmed, fading out upward, so there's still no hard bar */
 /* while the boot screen is up, nothing of the page may peek out around it */
 body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
-.status::before{content:"";position:absolute;left:0;right:0;bottom:0;top:-36px;
-  background:linear-gradient(0deg, rgba(3,4,26,.7), rgba(3,4,26,.45) 60%, rgba(3,4,26,0));
+.status::before{content:"";position:absolute;left:0;right:0;bottom:0;top:-30px;
+  background:linear-gradient(180deg, rgba(3,4,26,0), rgba(3,4,26,.6) 45%, rgba(3,4,26,.6) 78%, rgba(3,4,26,.3));
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
-  -webkit-mask-image:linear-gradient(0deg,#000 55%,transparent);mask-image:linear-gradient(0deg,#000 55%,transparent)}
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 40%);mask-image:linear-gradient(180deg,transparent,#000 40%)}
+/* iOS 26 Safari won't paint fixed elements under its floating toolbar, so the sky can't reach down there.
+   what it does do is tint that area with the background-color of a real (not pseudo) fixed element touching
+   the bottom edge. this sliver is that element, in the colour the sky has at the bottom edge (sampled). */
+.ios-tint{display:none}
+@supports (-webkit-touch-callout:none){
+  .ios-tint{display:block;position:fixed;left:0;right:0;bottom:-8px;height:12px;z-index:29;pointer-events:none;background-color:#432b29}
+  body:has([data-boot]) .ios-tint{display:none}
+}
 .status-in{position:relative;max-width:1000px;margin:0 auto;padding:10px 24px calc(12px + env(safe-area-inset-bottom));display:flex;gap:16px;align-items:center;font-size:12.5px;text-shadow:0 0 8px rgba(3,4,26,.9),0 0 2px rgba(3,4,26,.9)}
 .status-in>*{pointer-events:auto}
 .status-in .tick{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:10px;color:var(--ink-dim)}
@@ -633,6 +641,7 @@ class Component extends DCLogic {
     window.addEventListener('popstate', this.onPopState);
     document.addEventListener('visibilitychange', this.onVisibility);
     this.setMoonFavicon();
+    if(!document.querySelector('.ios-tint')){ const t=document.createElement('div'); t.className='ios-tint'; t.setAttribute('aria-hidden','true'); document.body.appendChild(t); }
     if (this.state.booting) this.runBoot();
     else this.enterView(this.state.view, null);
   }
