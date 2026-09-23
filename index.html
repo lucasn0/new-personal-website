@@ -861,8 +861,8 @@ class Component extends DCLogic {
 
     // sparks: a burst of stars flung out in random directions, slowing down and fading
     const sparks=[];
+    const SKIP='a,button,input,textarea,select,label,summary,img,pre,canvas,[contenteditable],.home,.quote,.pal-bg,.moon,.bar';
     if(!calm){
-      const SKIP='a,button,input,textarea,select,label,summary,img,pre,canvas,[contenteditable],.home,.quote,.pal-bg,.moon,.bar';
       window.addEventListener('click',e=>{
         if(this.state.booting || e.button!==0) return;
         if(e.target.closest && e.target.closest(SKIP)) return;
@@ -903,9 +903,143 @@ class Component extends DCLogic {
       }
     };
 
+    // ── shooting stars: a rare, fast streak across the sky ──
+    const meteors=[];
+    let nextMeteor=rnd(2,5);
+    const drawMeteors=(dt)=>{
+      nextMeteor-=dt;
+      if(nextMeteor<=0){
+        nextMeteor=rnd(3.5,6.5);
+        const dir=Math.random()<.5?1:-1, a=rnd(0.3,0.75);      // shallow dive, left or right
+        const v=rnd(900,1400);
+        meteors.push({x:dir>0?rnd(-0.05,0.6)*SW:rnd(0.4,1.05)*SW, y:rnd(-0.05,0.45)*SH,
+          vx:Math.cos(a)*v*dir, vy:Math.sin(a)*v, age:0, life:rnd(0.55,0.95), size:rnd(1.3,2), hist:[]});
+      }
+      for(let i=meteors.length-1;i>=0;i--){
+        const m=meteors[i], h=m.hist;
+        m.age+=dt;
+        if(m.age<m.life){ m.x+=m.vx*dt; m.y+=m.vy*dt; h.push(m.x,m.y); if(h.length>32) h.splice(0,2); }
+        else { h.splice(0,4); if(h.length<6){ meteors.splice(i,1); continue; } }
+        if(h.length<6) continue;
+        const k=Math.min(1,m.age/m.life);
+        ribbon(sctx,h,h[h.length-2],h[h.length-1],m.size,Math.max(0.05,Math.sin(Math.PI*Math.min(1,k*1.15))));
+      }
+    };
+
+    // ── constellations: leave the cursor still on the sky for 1s and one draws itself there ──
+    // real positions (ra in hours, dec in degrees, visual magnitude), gnomonic projection, north up
+    const CONST=[
+      {name:'orion', stars:[[5.919,7.41,.5,'#ffc29a'],[5.242,-8.2,.13,'#d6e2ff'],[5.419,6.35,1.64],[5.796,-9.67,2.06],[5.679,-1.94,1.77],[5.604,-1.2,1.69],[5.533,-.3,2.23],[5.585,9.93,3.39]],
+        lines:[[7,0],[7,2],[0,2],[0,4],[2,6],[6,5],[5,4],[4,3],[6,1]]},
+      {name:'ursa major · big dipper', stars:[[11.062,61.75,1.79],[11.031,56.38,2.37],[11.897,53.69,2.44],[12.257,57.03,3.31],[12.9,55.96,1.77],[13.399,54.93,2.23],[13.792,49.31,1.86]],
+        lines:[[0,1],[1,2],[2,3],[3,0],[3,4],[4,5],[5,6]]},
+      {name:'cassiopeia', stars:[[.153,59.15,2.27],[.675,56.54,2.24],[.945,60.72,2.47],[1.43,60.24,2.68],[1.907,63.67,3.37]],
+        lines:[[0,1],[1,2],[2,3],[3,4]]},
+      {name:'crux · southern cross', stars:[[12.443,-63.1,.77,'#d6e2ff'],[12.795,-59.69,1.25,'#d6e2ff'],[12.519,-57.11,1.59,'#ffc29a'],[12.252,-58.75,2.79],[12.356,-60.4,3.59],[14.66,-60.83,-.1,'#fff1d6'],[14.064,-60.37,.6,'#d6e2ff']],
+        lines:[[2,0],[1,3]]},
+      {name:'scorpius', stars:[[16.49,-26.43,1.06,'#ff9f80'],[16.091,-19.81,2.62],[16.006,-22.62,2.29],[15.981,-26.11,2.89],[16.353,-25.59,2.88],[16.598,-28.22,2.82],[16.836,-34.29,2.29],[16.864,-38.05,3],[16.91,-42.36,3.62],[17.203,-43.24,3.33],[17.622,-43,1.86],[17.793,-40.13,2.99],[17.708,-39.03,2.39],[17.56,-37.1,1.62],[17.513,-37.3,2.7]],
+        lines:[[1,2],[2,3],[2,4],[4,0],[0,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14]]},
+      {name:'leo', stars:[[10.14,11.97,1.35],[10.122,16.76,3.5],[10.333,19.84,2.08],[10.278,23.42,3.43],[9.879,26.01,3.88],[9.764,23.77,2.98],[11.235,20.52,2.56],[11.237,15.43,3.33],[11.818,14.57,2.14]],
+        lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[2,6],[6,8],[8,7],[7,0],[6,7]]},
+      {name:'cygnus · northern cross', stars:[[20.69,45.28,1.25],[20.37,40.26,2.23],[19.938,35.08,3.89],[19.512,27.96,3.05,'#ffd9a0'],[20.77,33.97,2.48],[19.75,45.13,2.87]],
+        lines:[[0,1],[1,2],[2,3],[5,1],[1,4]]},
+      {name:'ursa minor · little dipper', stars:[[2.53,89.26,1.98],[17.537,86.59,4.35],[16.766,82.04,4.21],[15.734,77.79,4.29],[14.845,74.16,2.08,'#ffc29a'],[15.346,71.83,3.05],[16.292,75.76,4.95]],
+        lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,3]]},
+      {name:'lyra', stars:[[18.616,38.78,.03,'#d6e2ff'],[18.739,39.67,4.7],[18.746,37.61,4.36],[18.908,36.9,4.3],[18.983,32.69,3.24],[18.835,33.36,3.52]],
+        lines:[[0,1],[0,2],[1,2],[2,3],[3,4],[4,5],[5,2]]},
+      {name:'canis major', stars:[[6.752,-16.72,-1.46,'#d6e2ff'],[6.378,-17.96,1.98],[6.936,-17.05,4.37],[6.903,-12.04,4.07],[7.05,-23.83,3.02],[7.14,-26.39,1.84],[6.977,-28.97,1.5],[6.338,-30.06,3.02],[7.402,-29.3,2.45]],
+        lines:[[1,0],[0,2],[2,3],[0,4],[4,5],[5,6],[6,7],[5,8]]},
+      {name:'gemini', stars:[[7.577,31.89,1.58],[7.755,28.03,1.14,'#ffd9a0'],[7.186,30.25,4.41],[6.732,25.13,2.98],[6.383,22.51,2.87],[6.248,22.51,3.3],[7.599,26.9,4.06],[7.335,21.98,3.53],[7.068,20.57,3.79],[6.629,16.4,1.93],[7.429,27.8,3.79],[7.302,16.54,3.58],[6.755,12.9,3.35]],
+        lines:[[0,2],[2,3],[3,4],[4,5],[1,6],[6,7],[7,8],[8,9],[7,11],[11,12],[2,10],[10,6]]},
+      {name:'taurus', stars:[[4.599,16.51,.86,'#ffb38a'],[5.438,28.61,1.65],[5.627,21.14,3],[4.478,15.87,3.4],[4.33,15.63,3.65],[4.382,17.54,3.76],[4.477,19.18,3.53],[4.011,12.49,3.47],[3.414,9.03,3.6],[3.791,24.11,2.87,'#d6e2ff']],
+        lines:[[4,5],[5,6],[6,1],[4,3],[3,0],[0,2],[4,7],[7,8]]},
+      {name:'pegasus · great square', stars:[[23.079,15.21,2.49],[23.063,28.08,2.42,'#ffc29a'],[.221,15.18,2.83],[.14,29.09,2.06],[21.736,9.88,2.38,'#ffc29a'],[22.691,10.83,3.4],[22.17,6.2,3.53],[22.717,30.22,2.94],[22.833,24.6,3.48],[22.776,23.57,3.95]],
+        lines:[[0,1],[1,3],[3,2],[2,0],[0,5],[5,6],[6,4],[1,7],[1,8],[8,9]]},
+      {name:'sagittarius · the teapot', stars:[[18.097,-30.42,2.99],[18.35,-29.83,2.7],[18.403,-34.38,1.85],[18.466,-25.42,2.81],[18.761,-26.99,3.17],[19.044,-29.88,2.6],[18.921,-26.3,2.05],[19.116,-27.67,3.32]],
+        lines:[[0,1],[0,2],[1,2],[1,3],[3,4],[1,4],[4,5],[5,2],[4,6],[6,7],[7,5]]},
+      {name:'pleiades · seven sisters', size:.55, stars:[[3.791,24.105,2.87,'#d6e2ff'],[3.819,24.053,3.62,'#d6e2ff'],[3.748,24.113,3.7,'#d6e2ff'],[3.764,24.368,3.87,'#d6e2ff'],[3.772,23.948,4.18,'#d6e2ff'],[3.753,24.467,4.3,'#d6e2ff'],[3.82,24.137,5.05,'#d6e2ff'],[3.747,24.289,5.45,'#d6e2ff']],
+        lines:[]},
+    ];
+    const project=(c)=>{
+      const D=Math.PI/180, pts=c.stars.map(([ra,dec])=>[ra*15*D,dec*D]);
+      // centre on the circular mean of the stars
+      let sx=0,sy=0,sz=0; for(const[ra,dec] of pts){ sx+=Math.cos(dec)*Math.cos(ra); sy+=Math.cos(dec)*Math.sin(ra); sz+=Math.sin(dec); }
+      const ra0=Math.atan2(sy,sx), dec0=Math.atan2(sz,Math.hypot(sx,sy));
+      const xy=pts.map(([ra,dec])=>{
+        const cc=Math.sin(dec0)*Math.sin(dec)+Math.cos(dec0)*Math.cos(dec)*Math.cos(ra-ra0);
+        return [-Math.cos(dec)*Math.sin(ra-ra0)/cc, -(Math.cos(dec0)*Math.sin(dec)-Math.sin(dec0)*Math.cos(dec)*Math.cos(ra-ra0))/cc];   // east is left on the sky; screen y points down
+      });
+      const xs=xy.map(p=>p[0]), ys=xy.map(p=>p[1]);
+      const minx=Math.min(...xs), maxx=Math.max(...xs), miny=Math.min(...ys), maxy=Math.max(...ys);
+      return {xy:xy.map(([x,y])=>[x-(minx+maxx)/2, y-(miny+maxy)/2]), w:maxx-minx, h:maxy-miny};
+    };
+    const PROJ=CONST.map(project);
+    const monoFont=(getComputedStyle(document.documentElement).getPropertyValue('--mono')||'monospace').trim();
+    let lastC=-1, shown=null, still=0, mouse=null;
+    const isSky=(el)=>{
+      if(!el || el.closest?.(SKIP)) return false;
+      if(el===document.body || el===document.documentElement) return true;
+      return ![...el.childNodes].some(n=>n.nodeType===3 && n.textContent.trim());   // not over text
+    };
+    if(!calm){
+      window.addEventListener('mousemove',e=>{
+        mouse={x:e.clientX,y:e.clientY,el:e.target}; still=0;
+        if(shown && shown.out===null) shown.out=0;   // start fading
+      });
+      document.addEventListener('mouseleave',()=>{ mouse=null; if(shown && shown.out===null) shown.out=0; });
+    }
+    const drawConstellation=(dt)=>{
+      if(mouse && !shown && !this.state.booting && !this.state.paletteOpen){
+        still+=dt;
+        if(still>=1 && isSky(mouse.el)){
+          let i; do{ i=Math.floor(Math.random()*CONST.length); }while(i===lastC && CONST.length>1);
+          lastC=i;
+          const P=PROJ[i], box=Math.min(340,Math.max(200,Math.min(SW,SH)*0.42))*(CONST[i].size||1);
+          const sc=box/Math.max(P.w,P.h);
+          const hw=P.w*sc/2+24, hh=P.h*sc/2+34;
+          const cx=Math.max(hw,Math.min(SW-hw,mouse.x)), cy=Math.max(hh,Math.min(SH-hh-20,mouse.y));
+          shown={c:CONST[i], pts:P.xy.map(([x,y])=>[cx+x*sc,cy+y*sc]), labelY:cy+P.h*sc/2+26, cx, age:0, out:null};
+        }
+      }
+      if(!shown) return;
+      const S=shown; S.age+=dt;
+      if(S.out!==null){ S.out+=dt; if(S.out>=0.7){ shown=null; return; } }
+      const fade=S.out!==null?1-S.out/0.7:1;
+      const ease=x=>1-Math.pow(1-Math.max(0,Math.min(1,x)),3);
+      // stars pop in one after another
+      S.c.stars.forEach((st,i)=>{
+        const a=ease((S.age-i*0.06)/0.5)*fade; if(a<=0) return;
+        const [x,y]=S.pts[i], m=st[2], r=Math.max(1,Math.min(3.4,1.2+(3.6-m)*0.6));
+        const g=sctx.createRadialGradient(x,y,0,x,y,r*4.5);
+        const col=st[3]||'#ffffff';
+        g.addColorStop(0,col); g.addColorStop(0.25,col+'66'); g.addColorStop(1,col+'00');
+        sctx.globalAlpha=a*0.9; sctx.fillStyle=g; sctx.beginPath(); sctx.arc(x,y,r*4.5,0,Math.PI*2); sctx.fill();
+        sctx.globalAlpha=a; sctx.fillStyle=col; sctx.beginPath(); sctx.arc(x,y,r,0,Math.PI*2); sctx.fill();
+      });
+      // then the lines trace themselves, segment by segment
+      const L=S.c.lines, t0=0.4, per=Math.min(0.2,1.1/L.length);
+      sctx.lineWidth=1; sctx.lineCap='round';
+      L.forEach(([a,b],i)=>{
+        const k=ease((S.age-t0-i*per)/(per*1.6)); if(k<=0) return;
+        const [x1,y1]=S.pts[a], [x2,y2]=S.pts[b];
+        const d=Math.hypot(x2-x1,y2-y1), gap=Math.min(7,d*0.2);          // lines stop short of the stars
+        const ux=(x2-x1)/d, uy=(y2-y1)/d;
+        const sx=x1+ux*gap, sy=y1+uy*gap, ex=x1+ux*(gap+(d-2*gap)*k), ey=y1+uy*(gap+(d-2*gap)*k);
+        sctx.globalAlpha=0.5*fade; sctx.strokeStyle='#cdd6ff';
+        sctx.beginPath(); sctx.moveTo(sx,sy); sctx.lineTo(ex,ey); sctx.stroke();
+      });
+      const la=ease((S.age-t0-L.length*per*0.7)/0.5)*fade;
+      if(la>0){
+        sctx.globalAlpha=la*0.85; sctx.fillStyle='#a2a4c3';
+        sctx.font=`12px ${monoFont}`; sctx.textAlign='center'; sctx.textBaseline='top';
+        sctx.fillText(S.c.name,S.cx,S.labelY);
+      }
+      sctx.globalAlpha=1;
+    };
+
     const TRAIL=36;
     const draw=(t,dt)=>{
-      drawSparks(dt);
+      drawSparks(dt); drawMeteors(dt); drawConstellation(dt);
       tilt.x+=(tilt.tx-tilt.x)*Math.min(1,dt*2.5);
       tilt.y+=(tilt.ty-tilt.y)*Math.min(1,dt*2.5);
       // the side the cursor is on sinks away from you
