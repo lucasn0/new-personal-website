@@ -780,8 +780,32 @@ class Component extends DCLogic {
   initStars(){
     const neb=document.createElement('canvas'); neb.className='nebula';
     document.body.appendChild(neb);
-    this.paintMilkyWay(neb);
-    let mwT; window.addEventListener('resize',()=>{ clearTimeout(mwT); mwT=setTimeout(()=>this.paintMilkyWay(neb),200); });
+    // the milky way's own faint stars sit on a canvas that leans with it, and twinkle
+    const mws=document.createElement('canvas'); mws.className='nebula';
+    document.body.appendChild(mws);
+    const mwctx=mws.getContext('2d');
+    let mwStars=[];
+    const sizeMws=()=>{
+      const d=Math.min(window.devicePixelRatio||1,2);
+      mws.width=mws.clientWidth*d; mws.height=mws.clientHeight*d; mwctx.setTransform(d,0,0,d,0,0);
+    };
+    const paintMw=()=>{ mwStars=this.paintMilkyWay(neb)||[]; sizeMws(); };
+    paintMw();
+    let mwT; window.addEventListener('resize',()=>{ clearTimeout(mwT); mwT=setTimeout(()=>{ paintMw(); if(calm) drawMwStars(0); },200); });
+    let mwAcc=1;
+    const drawMwStars=(t,dt=1)=>{
+      mwAcc+=dt; if(mwAcc<1/30) return; mwAcc=0;       // 30fps is plenty for a twinkle
+      mwctx.clearRect(0,0,mws.clientWidth,mws.clientHeight);
+      let col='';
+      for(const s of mwStars){
+        if(s.c!==col){ col=s.c; mwctx.fillStyle=col; }
+        const tw=calm?0.5:0.5+0.5*Math.sin(t*s.sp+s.ph)*(0.65+0.35*Math.sin(t*s.sp*0.37+s.ph*1.7));   // irregular, not a metronome
+        mwctx.globalAlpha=s.a*(1-s.dp*tw);
+        if(s.r<0.6){ mwctx.fillRect(s.x-s.r,s.y-s.r,s.r*2,s.r*2); }
+        else { mwctx.beginPath(); mwctx.arc(s.x,s.y,s.r,0,Math.PI*2); mwctx.fill(); }
+      }
+      mwctx.globalAlpha=1;
+    };
     const cv=document.createElement('canvas'); cv.className='stars';
     document.body.appendChild(cv);
     const ctx=cv.getContext('2d');
@@ -817,7 +841,7 @@ class Component extends DCLogic {
       p1:rnd(0,9), p2:rnd(0,9), p3:rnd(0,9),
       drift:rnd(10,40),
       // rolling: how far it slides when the table tilts, and how fast it catches up
-      fall:rnd(30,96), grip:rnd(1.2,3.5), ox:0, oy:0,
+      fall:rnd(36,115), grip:rnd(1.2,3.5), ox:0, oy:0,
       hist:[]
     }));
 
@@ -829,7 +853,7 @@ class Component extends DCLogic {
     };
 
     // tilt: -1..1 on each axis, eased toward wherever the cursor is
-    const MAX_DEG=8.4;
+    const MAX_DEG=10.08;
     const tilt={x:0,y:0,tx:0,ty:0};
     if(!calm){
       window.addEventListener('mousemove',e=>{
@@ -939,8 +963,13 @@ class Component extends DCLogic {
     // ── constellations: leave the cursor still on the sky for 1s and one draws itself there ──
     // real positions (ra in hours, dec in degrees, visual magnitude), gnomonic projection, north up
     const CONST=[
-      {name:'orion', stars:[[5.919,7.41,.5,'#ffc29a'],[5.242,-8.2,.13,'#d6e2ff'],[5.419,6.35,1.64],[5.796,-9.67,2.06],[5.679,-1.94,1.77],[5.604,-1.2,1.69],[5.533,-.3,2.23],[5.585,9.93,3.39]],
-        lines:[[7,0],[7,2],[0,2],[0,4],[2,6],[6,5],[5,4],[4,3],[6,1]]},
+      // body + belt, the raised club (μ ξ ν χ¹ χ²) and the shield/bow (π¹–π⁶)
+      {name:'orion', stars:[[5.919,7.41,.5,'#ffc29a'],[5.242,-8.2,.13,'#d6e2ff'],[5.419,6.35,1.64],[5.796,-9.67,2.06],[5.679,-1.94,1.77],[5.604,-1.2,1.69],[5.533,-.3,2.23],[5.585,9.93,3.39],
+          [6.04,9.65,4.12],[6.199,14.21,4.45],[6.126,14.77,4.42],[5.906,20.28,4.39],[6.064,20.14,4.63],
+          [4.907,10.15,4.65],[4.843,8.9,4.35],[4.83,6.96,3.19],[4.853,5.61,3.68],[4.904,2.44,3.72],[4.976,1.71,4.47]],
+        lines:[[7,0],[7,2],[0,2],[0,4],[2,6],[6,5],[5,4],[4,3],[6,1],
+          [0,8],[8,9],[9,10],[10,11],[9,12],
+          [2,15],[13,14],[14,15],[15,16],[16,17],[17,18]]},
       {name:'ursa major · big dipper', stars:[[11.062,61.75,1.79],[11.031,56.38,2.37],[11.897,53.69,2.44],[12.257,57.03,3.31],[12.9,55.96,1.77],[13.399,54.93,2.23],[13.792,49.31,1.86]],
         lines:[[0,1],[1,2],[2,3],[3,0],[3,4],[4,5],[5,6]]},
       {name:'cassiopeia', stars:[[.153,59.15,2.27],[.675,56.54,2.24],[.945,60.72,2.47],[1.43,60.24,2.68],[1.907,63.67,3.37]],
@@ -1055,7 +1084,8 @@ class Component extends DCLogic {
       // the side the cursor is on sinks away from you
       cv.style.transform=`perspective(1100px) rotateX(${(-tilt.y*MAX_DEG).toFixed(3)}deg) rotateY(${(tilt.x*MAX_DEG).toFixed(3)}deg)`;
       // the milky way is "further away": it leans half as much, which gives a bit of parallax
-      neb.style.transform=`perspective(1100px) rotateX(${(-tilt.y*MAX_DEG*.5).toFixed(3)}deg) rotateY(${(tilt.x*MAX_DEG*.5).toFixed(3)}deg)`;
+      neb.style.transform=mws.style.transform=`perspective(1100px) rotateX(${(-tilt.y*MAX_DEG*.5).toFixed(3)}deg) rotateY(${(tilt.x*MAX_DEG*.5).toFixed(3)}deg)`;
+      drawMwStars(t,dt);
 
       ctx.clearRect(0,0,W,H);
       for(const s of stars){
@@ -1078,7 +1108,7 @@ class Component extends DCLogic {
       ctx.globalAlpha=1;
     };
 
-    if(calm){ draw(0,0); window.addEventListener('resize',()=>draw(0,0)); return; }
+    if(calm){ draw(0,0); drawMwStars(0); window.addEventListener('resize',()=>draw(0,0)); return; }
     let last=performance.now();
     const loop=(now)=>{
       const dt=Math.min((now-last)/1000,0.05); last=now;
@@ -1113,21 +1143,21 @@ class Component extends DCLogic {
     const band=(x,y)=>{
       const dx=x-ox, dy=y-oy;
       const u=(dx*ux+dy*uy)/S, v=(dx*nx+dy*ny)/S;           // u along, v across (both ~ -0.5..0.5)
-      const bend=0.035*Math.sin(u*5.2+1.3);                  // gentle meander
-      const w=0.075*(0.75+0.5*fbm(u*3+11,3.3,3));            // width breathes along the length
-      const d=(v-bend)/w;
+      const w=0.075*(0.94+0.12*fbm(u*2+11,3.3,2));           // straight band, width barely breathes
+      const d=v/w;
       let I=Math.exp(-d*d*1.4);
-      I*=0.72+0.5*fbm(u*9,v*9+4,5);                          // clumpy star clouds, but no bald patches
-      I*=0.7+0.3*Math.exp(-Math.pow(u/0.5,2));               // fades a little toward the ends
-      // the great rift: a patchy dark lane just off the band's centre line
-      const rd=(v-bend-0.012-0.01*Math.sin(u*9))/(w*0.22);
-      const rift=Math.exp(-rd*rd)*Math.max(0,fbm(u*6+40,v*6,4)*1.6-0.35);
-      I*=1-Math.min(0.4,rift*0.6);
-      return {I:Math.max(0,I),d};
+      I*=0.84+0.32*fbm(u*7,v*7+4,4);                         // broad clouds, gentle
+      const tex=Math.max(0,Math.min(1,(fbm(u*20+7,v*20,4)-0.5)*1.9+0.5));
+      I*=0.7+0.6*tex;                                        // small-scale mottling: texture, never a hole
+      I*=0.86+0.14*Math.exp(-Math.pow(u/0.55,2));            // a touch brighter toward the middle
+      // the great rift: a faint, straight dark lane just off the centre line
+      const rd=(v-0.01)/(w*0.25);
+      I*=1-Math.exp(-rd*rd)*0.12*(0.6+0.8*fbm(u*4+40,1.7,3));
+      return {I:Math.max(0,I),d,tex};
     };
 
     // glow, at quarter resolution then scaled up smooth
-    const q=4, gw=Math.ceil(W/q), gh=Math.ceil(H/q);
+    const q=3, gw=Math.ceil(W/q), gh=Math.ceil(H/q);
     const off=document.createElement('canvas'); off.width=gw; off.height=gh;
     const octx=off.getContext('2d'), img=octx.createImageData(gw,gh), px=img.data;
     for(let j=0;j<gh;j++) for(let i=0;i<gw;i++){
@@ -1139,20 +1169,24 @@ class Component extends DCLogic {
     }
     octx.putImageData(img,0,0);
     ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high';
-    ctx.filter='blur(6px)'; ctx.drawImage(off,0,0,W,H); ctx.filter='none';
+    ctx.filter='blur(3px)'; ctx.drawImage(off,0,0,W,H); ctx.filter='none';
 
-    // the haze of unresolved stars: dense where the band is bright
-    const N=Math.round(W*H/200);
+    // the haze of unresolved stars: dense where the band is bright. they're not painted here —
+    // they're handed back so the sky loop can make every one of them twinkle
+    const N=Math.round(W*H/200), stars=[];
     for(let n=0;n<N;n++){
       const x=rand()*W, y=rand()*H;
-      const {I}=band(x,y);
-      if(rand()>Math.sqrt(I)*0.75+0.04) continue;
-      ctx.globalAlpha=0.12+rand()*0.4*Math.min(1,I+0.2);
-      ctx.fillStyle=rand()<.15?'#ffe6c7':(rand()<.3?'#cfd8ff':'#fff');
-      const r=0.25+Math.pow(rand(),3)*0.8;
-      ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+      const {I,tex}=band(x,y);
+      if(rand()>Math.sqrt(I)*0.75*(0.45+0.9*tex)+0.04) continue;   // stars clump with the mottling
+      stars.push({x, y,
+        a:0.14+rand()*0.46*Math.min(1,I+0.2),
+        c:rand()<.15?'#ffe6c7':(rand()<.3?'#cfd8ff':'#ffffff'),
+        r:0.25+Math.pow(rand(),3)*0.8,
+        sp:1.5+rand()*3.5, ph:rand()*Math.PI*2,      // twinkle speed + phase
+        dp:0.6+rand()*0.35});                          // how deep it dims
     }
-    ctx.globalAlpha=1;
+    stars.sort((p,q)=>p.c<q.c?-1:p.c>q.c?1:0);          // fewer fillStyle switches per frame
+    return stars;
   }
   moonPhase(date){ const epoch=new Date('2000-01-06T18:14:00Z').getTime(); const days=(date.getTime()-epoch)/86400000; return (days%29.5305882)/29.5305882; }
   phaseName(p){ if(p<0.03||p>0.97) return 'new moon'; if(p<0.22) return 'waxing crescent'; if(p<0.28) return 'first quarter'; if(p<0.47) return 'waxing gibbous'; if(p<0.53) return 'full moon'; if(p<0.72) return 'waning gibbous'; if(p<0.78) return 'last quarter'; return 'waning crescent'; }
