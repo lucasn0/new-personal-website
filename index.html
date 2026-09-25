@@ -94,7 +94,6 @@ h2.title{font-size:24px;line-height:1.2;font-weight:700;margin:0 0 6px}
 .quote p{margin:0}
 .quote .q{font-style:italic;font-size:16.5px;line-height:1.65;min-height:1.65em}
 .quote .a{margin-top:8px;padding-left:2ch;color:var(--ink-dim)}
-.quote .hint{margin-top:14px;font-size:12.5px;color:var(--ink-faint)}
 
 /* ls ~/ */
 .rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));column-gap:40px;row-gap:4px;margin:0;padding:0;list-style:none;max-width:860px}
@@ -251,11 +250,11 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
 
       <div class="np">
         <sc-if value="{{ showTopExtras }}" hint-placeholder-val="{{ true }}">
-          <span class="disc" data-disc="1" aria-hidden="true"></span><span data-np-label="1">listening to</span> <span data-np="1">…</span>
+          <span class="disc" data-disc="1" aria-hidden="true"></span><span data-np-label="1">listening to</span> <span data-np="1">...</span>
         </sc-if>
       </div>
 
-      <button class="plain" onClick="{{ openPalette }}" title="search (/ or ctrl+k)"><u>search</u></button>
+      <button class="plain" onClick="{{ openPalette }}"><u>search</u></button>
 
       <sc-if value="{{ showTopExtras }}" hint-placeholder-val="{{ true }}">
         <span data-clock="1" class="clock">--:--:--</span>
@@ -274,10 +273,9 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
           software engineer working across <strong>full-stack development, cloud infrastructure and systems</strong>. computer science at uba. right now i'm building a <a href="#" onClick="{{ goWork }}">crm/erp</a> for a cargo inspection company that runs 24/7, and i made <a href="https://pact.ar/" target="_blank" rel="noopener">pact.ar</a>. from argentina, usually with a terminal open and a record spinning.
         </p>
 
-        <div class="quote" onClick="{{ shuffleQuote }}" title="click for another one">
+        <div class="quote" onClick="{{ shuffleQuote }}">
           <p data-quote="1" class="q"></p>
           <p data-author="1" class="a"></p>
-          <p class="hint">click the quote for another one. / searches the site.</p>
         </div>
       </section>
 
@@ -303,8 +301,8 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
         <p class="cmd"><b>$</b> cat about.md</p>
         <h2 class="title" style="margin-bottom:22px">about</h2>
         <div class="prose">
-          <p>I'm Lucas, a software engineer and computer science student at the <b>University of Buenos Aires</b>, happiest in a terminal with a tiling WM and a record spinning.</p>
-          <p>I build things end to end: I designed, shipped and self-manage <b>PACT.AR</b> on Oracle Cloud infra I provisioned myself. When I'm not coding I'm digging through crates, reading critically (there are lifelong lessons to mine in El Quijote, and admittedly far less to dissect in Brandon Sanderson), or tweaking my dotfiles for the hundredth time.</p>
+          <p>i'm lucas, a software engineer and computer science student at the <b>university of buenos aires</b>, happiest in a terminal with a tiling wm and a record spinning.</p>
+          <p>i build things end to end: i designed, shipped and self-manage <b>pact.ar</b> on oracle cloud infra i provisioned myself. when i'm not coding i'm digging through crates, reading critically (there are lifelong lessons to mine in el quijote, and admittedly far less to dissect in brandon sanderson), or tweaking my dotfiles for the hundredth time.</p>
         </div>
         <pre data-donut="1" class="donut" aria-hidden="true"></pre>
       </section>
@@ -321,7 +319,7 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
           <sc-for list="{{ shelf }}" as="s" hint-placeholder-count="14">
             <div class="spine" style="width:{{ s.w }}px;padding-top:{{ s.pt }}px;background-color:{{ s.bg }};color:{{ s.fg }}">
               <span class="sp-t">{{ s.label }}</span>
-              <span class="tip" style="top:{{ s.pt }}px"><b>{{ s.book }}</b>{{ s.author }} · <em>{{ s.stars }}</em></span>
+              <span class="tip" style="top:{{ s.pt }}px"><b>{{ s.book }}</b>{{ s.author }}, <em>{{ s.stars }}</em></span>
             </div>
           </sc-for>
         </div>
@@ -343,7 +341,7 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
         <a class="back" href="#" onClick="{{ goHomeLink }}">cd ..</a>
         <p class="cmd"><b>$</b> cat bookmarks.txt</p>
         <h2 class="title">bookmarks</h2>
-        <p class="lede">corners of the web worth keeping. they open in a new tab.</p>
+        <p class="lede">corners of the web worth keeping.</p>
         <ul class="bm">
           <sc-for list="{{ bookmarks }}" as="bm" hint-placeholder-count="12">
             <li>
@@ -381,7 +379,7 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
         <a class="back" href="#" onClick="{{ goHomeLink }}">cd ..</a>
         <p class="cmd"><b>$</b> ls ~/music/shelf</p>
         <h2 class="title">the vinyl shelf</h2>
-        <p class="lede">{{ vinylCount }} records. hover a sleeve for the tracklist.</p>
+        <p class="lede">{{ vinylCount }} records.</p>
         <div style="position:relative">
           <div style="position:fixed;inset:0;background:radial-gradient(circle at center, rgba(2,3,20,.45), rgba(2,3,16,.85));opacity:{{ dimOpacity }};pointer-events:none;transition:opacity .4s ease;z-index:8"></div>
           <div class="shelf">
@@ -422,7 +420,7 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
           <p class="role">three-person team: architecture, full-stack and aws.</p>
           <div class="work-grid">
             <div>
-              <p class="body">A custom operational platform for a South American cargo inspection company, replacing fragmented Zoho CRM, spreadsheet, legacy-software and WhatsApp workflows. It's being prepared for 50 to 100 internal users running 24/7 operations across Argentina, Brazil, Chile and Uruguay.</p>
+              <p class="body">a custom operational platform for a south american cargo inspection company, replacing fragmented zoho crm, spreadsheet, legacy-software and whatsapp workflows. it's being prepared for 50 to 100 internal users running 24/7 operations across argentina, brazil, chile and uruguay.</p>
               <ul>
                 <sc-for list="{{ cargoHighlights }}" as="hl" hint-placeholder-count="4">
                   <li>{{ hl }}</li>
@@ -458,7 +456,7 @@ EC2 / Linux
           <p class="role">solo project: product design, full-stack and cloud infrastructure.</p>
           <div class="work-grid">
             <div>
-              <p class="body">A digital-contract SaaS for Argentine freelancers and small businesses. I designed and shipped the whole product, including legally valid electronic signatures under Law 25.506, email-based verification, Mercado Pago subscriptions, and self-managed Oracle Cloud infrastructure.</p>
+              <p class="body">a digital-contract saas for argentine freelancers and small businesses. i designed and shipped the whole product, including legally valid electronic signatures under law 25.506, email-based verification, mercado pago subscriptions, and self-managed oracle cloud infrastructure.</p>
               <ul>
                 <sc-for list="{{ pactHighlights }}" as="hl" hint-placeholder-count="4">
                   <li>{{ hl }}</li>
@@ -488,7 +486,7 @@ EC2 / Linux
       <div class="pal" onClick="{{ stop }}">
         <div class="pal-in">
           <span style="color:var(--accent)">$</span>
-          <input data-pal-input="1" value="{{ q }}" onInput="{{ onQuery }}" onKeyDown="{{ onPaletteKey }}" placeholder="go to…" aria-label="search the site" />
+          <input data-pal-input="1" value="{{ q }}" onInput="{{ onQuery }}" onKeyDown="{{ onPaletteKey }}" placeholder="go to..." aria-label="search the site" />
           <small>esc</small>
         </div>
         <div class="pal-list">
@@ -499,7 +497,7 @@ EC2 / Linux
             </div>
           </sc-for>
           <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
-            <div style="padding:14px 16px;color:var(--ink-faint);font-size:13px">nothing matches. try music, books or github.</div>
+            <div style="padding:14px 16px;color:var(--ink-faint);font-size:13px">nothing matches.</div>
           </sc-if>
         </div>
       </div>
@@ -511,7 +509,6 @@ EC2 / Linux
     <div data-boot onClick="{{ skipBoot }}" style="position:fixed;inset:0;z-index:90;background:var(--sky-top);display:flex;align-items:center;justify-content:center;cursor:pointer">
       <div style="width:min(620px,90vw)">
         <pre ref="{{ bootRef }}" style="margin:0;font-family:var(--mono);font-size:14px;line-height:1.7;color:var(--ink-dim);white-space:pre-wrap"></pre>
-        <div style="margin-top:22px;color:var(--ink-faint);font-size:12px">click or press any key to skip</div>
       </div>
     </div>
   </sc-if>
@@ -567,10 +564,10 @@ class Component extends DCLogic {
       {label:'music',     path:'~/music',     desc:'the vinyl shelf',          tag:'dir', kind:'view', to:'music'},
       {label:'library',   path:'~/library',   desc:'books, critically rated',  tag:'dir', kind:'view', to:'library'},
       {label:'bookmarks', path:'~/bookmarks', desc:'links worth keeping',      tag:'dir', kind:'view', to:'bookmarks'},
-      {label:'steam',     path:'id/fardes1',       desc:'hours i won’t admit to',  tag:'ext', kind:'ext', href:'https://steamcommunity.com/id/fardes1/'},
+      {label:'steam',     path:'id/fardes1',       desc:'hours i won't admit to',  tag:'ext', kind:'ext', href:'https://steamcommunity.com/id/fardes1/'},
       {label:'movies',    path:'imdb/ratings',     desc:'films, rated',            tag:'ext', kind:'ext', href:'https://www.imdb.com/user/p.ivmfcxmxlais7jxw4c2hzk3opm/ratings/?ref_=up_hd_ql_urrat'},
       {label:'email',     path:'mailto:lnagel',    desc:'say hello',               tag:'ext', kind:'ext', href:'mailto:lnagel@dc.uba.ar'},
-      {label:'youtube',   path:'yt://watch',       desc:'i’m so sorry',      tag:'ext', kind:'ext', href:'https://www.youtube.com/watch?v=dQw4w9WgXcQ'}
+      {label:'youtube',   path:'yt://watch',       desc:'i'm so sorry',      tag:'ext', kind:'ext', href:'https://www.youtube.com/watch?v=dQw4w9WgXcQ'}
     ];
 
     // cyan → turquoise → mint → lemon, softened to sit on the night sky. one per ~/ entry, in order
@@ -724,7 +721,7 @@ class Component extends DCLogic {
     const hh=Math.floor(diff%86400000/3600000);
     const mm=Math.floor(diff%3600000/60000);
     const laps=(diff/(365.25636*86400000)).toFixed(2);   // sidereal years
-    return `alive for ${dd.toLocaleString()} days, ${hh}h ${mm}m · ${laps} laps around the sun`;
+    return `alive for ${dd.toLocaleString()} days, ${hh}h ${mm}m, ${laps} laps around the sun`;
   }
   startTicker(){
     this._npText='now listening to silence';
@@ -1018,19 +1015,19 @@ class Component extends DCLogic {
         lines:[[7,0],[7,2],[0,2],[0,4],[2,6],[6,5],[5,4],[4,3],[6,1],
           [0,8],[8,9],[9,10],[10,11],[9,12],
           [2,15],[13,14],[14,15],[15,16],[16,17],[17,18]]},
-      {name:'ursa major · big dipper', stars:[[11.062,61.75,1.79],[11.031,56.38,2.37],[11.897,53.69,2.44],[12.257,57.03,3.31],[12.9,55.96,1.77],[13.399,54.93,2.23],[13.792,49.31,1.86]],
+      {name:'ursa major (big dipper)', stars:[[11.062,61.75,1.79],[11.031,56.38,2.37],[11.897,53.69,2.44],[12.257,57.03,3.31],[12.9,55.96,1.77],[13.399,54.93,2.23],[13.792,49.31,1.86]],
         lines:[[0,1],[1,2],[2,3],[3,0],[3,4],[4,5],[5,6]]},
       {name:'cassiopeia', stars:[[.153,59.15,2.27],[.675,56.54,2.24],[.945,60.72,2.47],[1.43,60.24,2.68],[1.907,63.67,3.37]],
         lines:[[0,1],[1,2],[2,3],[3,4]]},
-      {name:'crux · southern cross', stars:[[12.443,-63.1,.77,'#d6e2ff'],[12.795,-59.69,1.25,'#d6e2ff'],[12.519,-57.11,1.59,'#ffc29a'],[12.252,-58.75,2.79],[12.356,-60.4,3.59],[14.66,-60.83,-.1,'#fff1d6'],[14.064,-60.37,.6,'#d6e2ff']],
+      {name:'crux (southern cross)', stars:[[12.443,-63.1,.77,'#d6e2ff'],[12.795,-59.69,1.25,'#d6e2ff'],[12.519,-57.11,1.59,'#ffc29a'],[12.252,-58.75,2.79],[12.356,-60.4,3.59],[14.66,-60.83,-.1,'#fff1d6'],[14.064,-60.37,.6,'#d6e2ff']],
         lines:[[2,0],[1,3]]},
       {name:'scorpius', stars:[[16.49,-26.43,1.06,'#ff9f80'],[16.091,-19.81,2.62],[16.006,-22.62,2.29],[15.981,-26.11,2.89],[16.353,-25.59,2.88],[16.598,-28.22,2.82],[16.836,-34.29,2.29],[16.864,-38.05,3],[16.91,-42.36,3.62],[17.203,-43.24,3.33],[17.622,-43,1.86],[17.793,-40.13,2.99],[17.708,-39.03,2.39],[17.56,-37.1,1.62],[17.513,-37.3,2.7]],
         lines:[[1,2],[2,3],[2,4],[4,0],[0,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14]]},
       {name:'leo', stars:[[10.14,11.97,1.35],[10.122,16.76,3.5],[10.333,19.84,2.08],[10.278,23.42,3.43],[9.879,26.01,3.88],[9.764,23.77,2.98],[11.235,20.52,2.56],[11.237,15.43,3.33],[11.818,14.57,2.14]],
         lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[2,6],[6,8],[8,7],[7,0],[6,7]]},
-      {name:'cygnus · northern cross', stars:[[20.69,45.28,1.25],[20.37,40.26,2.23],[19.938,35.08,3.89],[19.512,27.96,3.05,'#ffd9a0'],[20.77,33.97,2.48],[19.75,45.13,2.87]],
+      {name:'cygnus (northern cross)', stars:[[20.69,45.28,1.25],[20.37,40.26,2.23],[19.938,35.08,3.89],[19.512,27.96,3.05,'#ffd9a0'],[20.77,33.97,2.48],[19.75,45.13,2.87]],
         lines:[[0,1],[1,2],[2,3],[5,1],[1,4]]},
-      {name:'ursa minor · little dipper', stars:[[2.53,89.26,1.98],[17.537,86.59,4.35],[16.766,82.04,4.21],[15.734,77.79,4.29],[14.845,74.16,2.08,'#ffc29a'],[15.346,71.83,3.05],[16.292,75.76,4.95]],
+      {name:'ursa minor (little dipper)', stars:[[2.53,89.26,1.98],[17.537,86.59,4.35],[16.766,82.04,4.21],[15.734,77.79,4.29],[14.845,74.16,2.08,'#ffc29a'],[15.346,71.83,3.05],[16.292,75.76,4.95]],
         lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,3]]},
       {name:'lyra', stars:[[18.616,38.78,.03,'#d6e2ff'],[18.739,39.67,4.7],[18.746,37.61,4.36],[18.908,36.9,4.3],[18.983,32.69,3.24],[18.835,33.36,3.52]],
         lines:[[0,1],[0,2],[1,2],[2,3],[3,4],[4,5],[5,2]]},
@@ -1040,11 +1037,11 @@ class Component extends DCLogic {
         lines:[[0,2],[2,3],[3,4],[4,5],[1,6],[6,7],[7,8],[8,9],[7,11],[11,12],[2,10],[10,6]]},
       {name:'taurus', stars:[[4.599,16.51,.86,'#ffb38a'],[5.438,28.61,1.65],[5.627,21.14,3],[4.478,15.87,3.4],[4.33,15.63,3.65],[4.382,17.54,3.76],[4.477,19.18,3.53],[4.011,12.49,3.47],[3.414,9.03,3.6],[3.791,24.11,2.87,'#d6e2ff']],
         lines:[[4,5],[5,6],[6,1],[4,3],[3,0],[0,2],[4,7],[7,8]]},
-      {name:'pegasus · great square', stars:[[23.079,15.21,2.49],[23.063,28.08,2.42,'#ffc29a'],[.221,15.18,2.83],[.14,29.09,2.06],[21.736,9.88,2.38,'#ffc29a'],[22.691,10.83,3.4],[22.17,6.2,3.53],[22.717,30.22,2.94],[22.833,24.6,3.48],[22.776,23.57,3.95]],
+      {name:'pegasus (great square)', stars:[[23.079,15.21,2.49],[23.063,28.08,2.42,'#ffc29a'],[.221,15.18,2.83],[.14,29.09,2.06],[21.736,9.88,2.38,'#ffc29a'],[22.691,10.83,3.4],[22.17,6.2,3.53],[22.717,30.22,2.94],[22.833,24.6,3.48],[22.776,23.57,3.95]],
         lines:[[0,1],[1,3],[3,2],[2,0],[0,5],[5,6],[6,4],[1,7],[1,8],[8,9]]},
-      {name:'sagittarius · the teapot', stars:[[18.097,-30.42,2.99],[18.35,-29.83,2.7],[18.403,-34.38,1.85],[18.466,-25.42,2.81],[18.761,-26.99,3.17],[19.044,-29.88,2.6],[18.921,-26.3,2.05],[19.116,-27.67,3.32]],
+      {name:'sagittarius (the teapot)', stars:[[18.097,-30.42,2.99],[18.35,-29.83,2.7],[18.403,-34.38,1.85],[18.466,-25.42,2.81],[18.761,-26.99,3.17],[19.044,-29.88,2.6],[18.921,-26.3,2.05],[19.116,-27.67,3.32]],
         lines:[[0,1],[0,2],[1,2],[1,3],[3,4],[1,4],[4,5],[5,2],[4,6],[6,7],[7,5]]},
-      {name:'pleiades · seven sisters', size:.55, stars:[[3.791,24.105,2.87,'#d6e2ff'],[3.819,24.053,3.62,'#d6e2ff'],[3.748,24.113,3.7,'#d6e2ff'],[3.764,24.368,3.87,'#d6e2ff'],[3.772,23.948,4.18,'#d6e2ff'],[3.753,24.467,4.3,'#d6e2ff'],[3.82,24.137,5.05,'#d6e2ff'],[3.747,24.289,5.45,'#d6e2ff']],
+      {name:'pleiades (seven sisters)', size:.55, stars:[[3.791,24.105,2.87,'#d6e2ff'],[3.819,24.053,3.62,'#d6e2ff'],[3.748,24.113,3.7,'#d6e2ff'],[3.764,24.368,3.87,'#d6e2ff'],[3.772,23.948,4.18,'#d6e2ff'],[3.753,24.467,4.3,'#d6e2ff'],[3.82,24.137,5.05,'#d6e2ff'],[3.747,24.289,5.45,'#d6e2ff']],
         lines:[]},
     ];
     // per-star facts for the hover tooltip, in the same order as each constellation's stars:
@@ -1054,10 +1051,10 @@ class Component extends DCLogic {
         ['alnitak','ζ ori','blue supergiant',1260],['alnilam','ε ori','blue supergiant',2000],['mintaka','δ ori','blue giant, multiple system',1200],['meissa','λ ori','blue giant',1100],
         [null,'μ ori','white multiple star',150],[null,'ξ ori','blue-white star',null],[null,'ν ori','blue-white star',null],[null,'χ¹ ori','sun-like star',28],[null,'χ² ori','blue supergiant',null],
         [null,'π¹ ori','white star',116],[null,'π² ori','white star',194],['tabit','π³ ori','yellow-white dwarf',26],[null,'π⁴ ori','blue giant',null],[null,'π⁵ ori','blue giant',null],[null,'π⁶ ori','orange giant',null]],
-      'ursa major · big dipper':[['dubhe','α uma','orange giant',123],['merak','β uma','white star',79],['phecda','γ uma','white star',84],['megrez','δ uma','white star',81],
+      'ursa major (big dipper)':[['dubhe','α uma','orange giant',123],['merak','β uma','white star',79],['phecda','γ uma','white star',84],['megrez','δ uma','white star',81],
         ['alioth','ε uma','white star',83],['mizar','ζ uma','white star, paired with alcor',83],['alkaid','η uma','blue-white star',104]],
       'cassiopeia':[['caph','β cas','yellow-white giant',55],['schedar','α cas','orange giant',228],['navi','γ cas','blue-white variable star',550],['ruchbah','δ cas','white eclipsing binary',99],['segin','ε cas','blue-white giant',440]],
-      'crux · southern cross':[['acrux','α cru','blue-white multiple star',320],['mimosa','β cru','blue giant',280],['gacrux','γ cru','red giant',88],['imai','δ cru','blue-white subgiant',345],['ginan','ε cru','orange giant',230],
+      'crux (southern cross)':[['acrux','α cru','blue-white multiple star',320],['mimosa','β cru','blue giant',280],['gacrux','γ cru','red giant',88],['imai','δ cru','blue-white subgiant',345],['ginan','ε cru','orange giant',230],
         ['rigil kentaurus','α cen','sun-like triple, the nearest star system',4.37],['hadar','β cen','blue giant',390]],
       'scorpius':[['antares','α sco','red supergiant, the scorpion\'s heart',550],['acrab','β sco','blue-white multiple star',400],['dschubba','δ sco','blue subgiant',400],['fang','π sco','blue-white multiple star',590],
         ['alniyat','σ sco','blue giant',700],['paikauhale','τ sco','blue dwarf',470],['larawag','ε sco','orange giant',64],['xamidimura','μ¹ sco','blue eclipsing binary',500],
@@ -1065,9 +1062,9 @@ class Component extends DCLogic {
         ['girtab','κ sco','blue giant',480],['shaula','λ sco','blue subgiant, the stinger',570],['lesath','υ sco','blue subgiant',580]],
       'leo':[['regulus','α leo','blue-white star',79],[null,'η leo','white supergiant',null],['algieba','γ leo','orange giant binary',130],['adhafera','ζ leo','yellow-white giant',270],
         ['rasalas','μ leo','orange giant',130],[null,'ε leo','yellow giant',250],['zosma','δ leo','white star',58],['chertan','θ leo','white star',165],['denebola','β leo','white star, the lion\'s tail',36]],
-      'cygnus · northern cross':[['deneb','α cyg','white supergiant',2600],['sadr','γ cyg','yellow-white supergiant',1800],[null,'η cyg','orange giant',140],
+      'cygnus (northern cross)':[['deneb','α cyg','white supergiant',2600],['sadr','γ cyg','yellow-white supergiant',1800],[null,'η cyg','orange giant',140],
         ['albireo','β cyg','gold-and-blue double star',430],['aljanah','ε cyg','orange giant',72],['fawaris','δ cyg','blue-white giant, triple',165]],
-      'ursa minor · little dipper':[['polaris','α umi','yellow supergiant, the north star',430],['yildun','δ umi','white star',172],[null,'ε umi','yellow giant binary',347],[null,'ζ umi','white star',null],
+      'ursa minor (little dipper)':[['polaris','α umi','yellow supergiant, the north star',430],['yildun','δ umi','white star',172],[null,'ε umi','yellow giant binary',347],[null,'ζ umi','white star',null],
         ['kochab','β umi','orange giant',131],['pherkad','γ umi','white giant',487],[null,'η umi','yellow-white star',97]],
       'lyra':[['vega','α lyr','white star',25],[null,'ε lyr','the double double',162],[null,'ζ¹ lyr','white star',152],[null,'δ² lyr','red giant',null],['sulafat','γ lyr','blue-white giant',620],['sheliak','β lyr','eclipsing binary',960]],
       'canis major':[['sirius','α cma','white star, brightest in the night sky',8.6],['mirzam','β cma','blue giant',490],[null,'ι cma','blue-white giant',null],[null,'θ cma','orange giant',250],
@@ -1078,11 +1075,11 @@ class Component extends DCLogic {
       'taurus':[['aldebaran','α tau','orange giant, the bull\'s eye',65],['elnath','β tau','blue giant',134],['tianguan','ζ tau','blue giant, by the crab nebula',440],[null,'θ² tau','white giant in the hyades',150],
         ['prima hyadum','γ tau','orange giant in the hyades',154],['secunda hyadum','δ¹ tau','orange giant in the hyades',153],['ain','ε tau','orange giant with a planet',147],
         [null,'λ tau','eclipsing binary',480],[null,'ο tau','yellow giant',290],['alcyone','η tau','brightest of the pleiades',444]],
-      'pegasus · great square':[['markab','α peg','blue-white giant',133],['scheat','β peg','red giant',196],['algenib','γ peg','blue subgiant',390],['alpheratz','α and','blue-white star, shared with andromeda',97],
+      'pegasus (great square)':[['markab','α peg','blue-white giant',133],['scheat','β peg','red giant',196],['algenib','γ peg','blue subgiant',390],['alpheratz','α and','blue-white star, shared with andromeda',97],
         ['enif','ε peg','orange supergiant, the horse\'s nose',690],['homam','ζ peg','blue-white star',204],['biham','θ peg','white star',92],['matar','η peg','yellow giant',214],['sadalbari','μ peg','orange giant',106],[null,'λ peg','yellow giant',null]],
-      'sagittarius · the teapot':[['alnasl','γ² sgr','orange giant, the spout',97],['kaus media','δ sgr','orange giant',350],['kaus australis','ε sgr','blue-white giant',143],['kaus borealis','λ sgr','orange giant, the lid',78],
+      'sagittarius (the teapot)':[['alnasl','γ² sgr','orange giant, the spout',97],['kaus media','δ sgr','orange giant',350],['kaus australis','ε sgr','blue-white giant',143],['kaus borealis','λ sgr','orange giant, the lid',78],
         [null,'φ sgr','blue-white giant',230],['ascella','ζ sgr','white binary',88],['nunki','σ sgr','blue-white star',228],[null,'τ sgr','orange giant',120]],
-      'pleiades · seven sisters':[['alcyone','η tau','blue giant',444],['atlas','27 tau','blue giant',444],['electra','17 tau','blue giant',444],['maia','20 tau','blue giant',444],
+      'pleiades (seven sisters)':[['alcyone','η tau','blue giant',444],['atlas','27 tau','blue giant',444],['electra','17 tau','blue giant',444],['maia','20 tau','blue giant',444],
         ['merope','23 tau','blue subgiant',444],['taygeta','19 tau','blue-white star',444],['pleione','28 tau','blue-white shell star',444],['celaeno','16 tau','blue-white star',444]],
     };
     for(const c of CONST) c.info=INFO[c.name];
@@ -1179,7 +1176,7 @@ class Component extends DCLogic {
         const r=Math.max(1,Math.min(3.4,1.2+(3.6-S.c.stars[S.hover][2])*0.6));
         sctx.globalAlpha=0.8*fade; sctx.strokeStyle=S.c.stars[S.hover][3]||'#ffffff'; sctx.lineWidth=1;
         sctx.beginPath(); sctx.arc(x,y,r+6,0,Math.PI*2); sctx.stroke();
-        const l1=nm||des, l2=[nm?des:null, kind, ly!=null?`${ly.toLocaleString('en-US')} ly`:null].filter(Boolean).join(' · ');
+        const l1=nm||des, l2=[nm?des:null, kind, ly!=null?`${ly.toLocaleString('en-US')} ly`:null].filter(Boolean).join(', ');
         const key=S.c.name+S.hover;
         if(card.dataset.k!==key){ card.dataset.k=key; card.firstChild.textContent=l1; card.lastChild.textContent=l2; }
         const w=card.offsetWidth, h=card.offsetHeight;
@@ -1484,8 +1481,8 @@ class Component extends DCLogic {
       rooms, library, shelf, bookmarks, vinyls, machines, palItems,
       cargoStack:this.CARGO_STACK.join(', ')+'.', pactStack:this.PACT_STACK.join(', ')+'.',
       goHomeLink:this.goHomeLink,
-      cargoHighlights:['Operational workflows for client orders, cargo inspections, vessels, inventory, invoicing, reporting, statistics, and internal alerts.','Next.js frontend, FastAPI backend, and PostgreSQL database.','Self-managed Linux deployment on AWS EC2 with RDS and S3.','Health-checked deployment workflow that validates releases before switching application processes.'],
-      pactHighlights:['Designed and built the product end-to-end.','Implemented the electronic-signature and email-verification workflow.','Integrated Mercado Pago subscription billing and payment-state handling.','Provisioned, secured, and operated its Oracle Cloud deployment.'],
+      cargoHighlights:['operational workflows for client orders, cargo inspections, vessels, inventory, invoicing, reporting, statistics, and internal alerts.','next.js frontend, fastapi backend, and postgresql database.','self-managed linux deployment on aws ec2 with rds and s3.','health-checked deployment workflow that validates releases before switching application processes.'],
+      pactHighlights:['designed and built the product end-to-end.','implemented the electronic-signature and email-verification workflow.','integrated mercado pago subscription billing and payment-state handling.','provisioned, secured, and operated its oracle cloud deployment.'],
       bookCount:this.LIBRARY.length, vinylCount:this.VINYLS.length,
       dimOpacity: hover?1:0,
       glitch:this.glitch, goHome:this.goHome, goWork:this.goWork, openPalette:this.openPalette,
