@@ -270,7 +270,7 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
         <p class="cmd"><b>$</b> whoami</p>
         <h1 class="name">Lucas Nagel</h1>
         <p class="intro">
-          software engineer working across <strong>full-stack development, cloud infrastructure and systems</strong>. computer science at uba. right now i'm building a <a href="#" onClick="{{ goWork }}">crm/erp</a> for a cargo inspection company that runs 24/7, and i made <a href="https://pact.ar/" target="_blank" rel="noopener">pact.ar</a>. from buenos aires.
+          software engineer, mostly <strong>full-stack and cloud infrastructure</strong>. computer science at uba. right now i'm building a <a href="#" onClick="{{ goWork }}">crm/erp</a> for a cargo inspection company that runs 24/7, and i made <a href="https://pact.ar/" target="_blank" rel="noopener">pact.ar</a>. from buenos aires.
         </p>
 
         <div class="quote" onClick="{{ shuffleQuote }}">
@@ -301,8 +301,7 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
         <p class="cmd"><b>$</b> cat about.md</p>
         <h2 class="title" style="margin-bottom:22px">about</h2>
         <div class="prose">
-          <p>i'm lucas, a software engineer and computer science student at the <b>university of buenos aires</b>, happiest in a terminal with a tiling wm and a record spinning.</p>
-          <p>i build things end to end: i designed, shipped and self-manage <b>pact.ar</b> on oracle cloud infra i provisioned myself. when i'm not coding i'm digging through crates, reading critically (there are lifelong lessons to mine in el quijote, and admittedly far less to dissect in brandon sanderson), or tweaking my dotfiles for the hundredth time.</p>
+          <p>i'm lucas, currently studying computer science at <b>uba</b>, while trying to obsessively create productive solutions for my clients. if i'm not doing that, you'll find me either reading, listening to music or playing piano.</p>
         </div>
         <pre data-donut="1" class="donut" aria-hidden="true"></pre>
       </section>
@@ -314,7 +313,7 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
         <a class="back" href="#" onClick="{{ goHomeLink }}">cd ..</a>
         <p class="cmd"><b>$</b> sort reading.log</p>
         <h2 class="title">library</h2>
-        <p class="lede">{{ bookCount }} books, read critically and rated honestly, out of five.</p>
+        <p class="lede">{{ bookCount }} books, rated out of five.</p>
         <div class="bookshelf">
           <sc-for list="{{ shelf }}" as="s" hint-placeholder-count="14">
             <div class="spine" style="width:{{ s.w }}px;padding-top:{{ s.pt }}px;background-color:{{ s.bg }};color:{{ s.fg }}">
@@ -341,7 +340,7 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
         <a class="back" href="#" onClick="{{ goHomeLink }}">cd ..</a>
         <p class="cmd"><b>$</b> cat bookmarks.txt</p>
         <h2 class="title">bookmarks</h2>
-        <p class="lede">corners of the web worth keeping.</p>
+        <p class="lede">sites i keep going back to.</p>
         <ul class="bm">
           <sc-for list="{{ bookmarks }}" as="bm" hint-placeholder-count="12">
             <li>
@@ -410,7 +409,7 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
         <a class="back" href="#" onClick="{{ goHomeLink }}">cd ..</a>
         <p class="cmd"><b>$</b> ls ~/work</p>
         <h2 class="title">selected work</h2>
-        <p class="lede">commercial systems and independent products i've designed, built and operated end to end.</p>
+        <p class="lede">client work and my own products.</p>
 
         <article class="work">
           <div class="work-head">
@@ -562,8 +561,8 @@ class Component extends DCLogic {
       {label:'linkedin',  path:'in/nagel-lucas',   desc:'experience & background',   tag:'ext', kind:'ext', href:'https://www.linkedin.com/in/nagel-lucas/'},
       {label:'machine',   path:'~/machine',   desc:'die maschine',             tag:'dir', kind:'view', to:'computer'},
       {label:'music',     path:'~/music',     desc:'the vinyl shelf',          tag:'dir', kind:'view', to:'music'},
-      {label:'library',   path:'~/library',   desc:'books, critically rated',  tag:'dir', kind:'view', to:'library'},
-      {label:'bookmarks', path:'~/bookmarks', desc:'links worth keeping',      tag:'dir', kind:'view', to:'bookmarks'},
+      {label:'library',   path:'~/library',   desc:'books, out of five',       tag:'dir', kind:'view', to:'library'},
+      {label:'bookmarks', path:'~/bookmarks', desc:'sites i go back to',       tag:'dir', kind:'view', to:'bookmarks'},
       {label:'steam',     path:'id/fardes1',       desc:"hours i won't admit to",  tag:'ext', kind:'ext', href:'https://steamcommunity.com/id/fardes1/'},
       {label:'movies',    path:'imdb/ratings',     desc:'films, rated',            tag:'ext', kind:'ext', href:'https://www.imdb.com/user/p.ivmfcxmxlais7jxw4c2hzk3opm/ratings/?ref_=up_hd_ql_urrat'},
       {label:'email',     path:'mailto:lnagel',    desc:'say hello',               tag:'ext', kind:'ext', href:'mailto:lnagel@dc.uba.ar'},
@@ -589,15 +588,21 @@ class Component extends DCLogic {
       }
     ];
 
+    // fake tty login; "last login" is the visitor's previous visit, like the real thing
+    let last=null;
+    try{ last=localStorage.getItem('lastLogin'); localStorage.setItem('lastLogin', new Date().toISOString()); }catch(e){}
+    const ok=t=>({h:'[  <span style="color:var(--accent)">OK</span>  ] '+t});
     this.BOOT = [
-      {h:'<span style="color:var(--accent)">[ boot ]</span> luk@arch'},
-      {h:'<span style="color:var(--accent)">[ ok ]</span>   mounting /home/luk'},
-      {h:'<span style="color:var(--accent)">[ ok ]</span>   loading dotfiles &amp; rc'},
-      {h:'<span style="color:var(--accent)">[ ok ]</span>   spawning window manager'},
-      {h:'<span style="color:var(--accent)">[ ok ]</span>   opening last.fm uplink'},
-      {h:'<span style="color:var(--accent)">[ ok ]</span>   seeding the starfield'},
-      {h:'<span style="color:var(--ink)">ready.</span> welcome back, friend.'}
+      {h:'Linux version 6.18.9-arch1-1 (luk@archlinux)'},
+      ok('Mounted /home/luk.'),
+      ok('Started Network Manager.'),
+      ok('Started last.fm scrobbler.'),
+      ok('Reached target Graphical Interface.'),
+      {h:'&nbsp;'},
+      {h:'<span style="color:var(--ink)">archlinux login: luk</span>'},
+      {h:'<span style="color:var(--ink)">Password:</span>'}
     ];
+    if (last){ const d=new Date(last); if(!isNaN(d)) this.BOOT.push({h:`Last login: ${d.toDateString().slice(0,10)} ${d.toTimeString().slice(0,8)} on tty1`}); }
 
     this.glitch = this.glitch.bind(this);
     this.openPalette = this.openPalette.bind(this);
@@ -1482,7 +1487,7 @@ class Component extends DCLogic {
       cargoStack:this.CARGO_STACK.join(', ')+'.', pactStack:this.PACT_STACK.join(', ')+'.',
       goHomeLink:this.goHomeLink,
       cargoHighlights:['operational workflows for client orders, cargo inspections, vessels, inventory, invoicing, reporting, statistics, and internal alerts.','next.js frontend, fastapi backend, and postgresql database.','self-managed linux deployment on aws ec2 with rds and s3.','health-checked deployment workflow that validates releases before switching application processes.'],
-      pactHighlights:['designed and built the product end-to-end.','implemented the electronic-signature and email-verification workflow.','integrated mercado pago subscription billing and payment-state handling.','provisioned, secured, and operated its oracle cloud deployment.'],
+      pactHighlights:['built it alone, from design to production.','implemented the electronic-signature and email-verification workflow.','integrated mercado pago subscription billing and payment-state handling.','runs on oracle cloud infra i set up and maintain myself.'],
       bookCount:this.LIBRARY.length, vinylCount:this.VINYLS.length,
       dimOpacity: hover?1:0,
       glitch:this.glitch, goHome:this.goHome, goWork:this.goWork, openPalette:this.openPalette,
