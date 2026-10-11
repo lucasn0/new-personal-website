@@ -32,7 +32,6 @@ body{
 a{color:inherit}
 a:focus-visible,button:focus-visible{outline:1px dashed var(--accent);outline-offset:3px}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-@keyframes bootline{from{opacity:0}to{opacity:1}}
 .stars{position:fixed;left:-10vw;top:-10vh;width:120vw;height:120vh;z-index:0;pointer-events:none;transform-origin:50% 50%;will-change:transform}
 .sparks{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
 /* sky layers: dawn glow + vignette under the stars, the milky way (a canvas that tilts with them), film grain on top */
@@ -154,7 +153,6 @@ h2.title{font-size:24px;line-height:1.2;font-weight:700;margin:0 0 6px}
 .work-head h3{margin:0;font-size:21px;font-weight:700}
 .work-head h3 a{text-decoration-color:var(--accent);text-underline-offset:4px}
 .work-head > span{color:var(--ink-faint);font-size:12.5px}
-.role{color:var(--ink-dim);font-size:13.5px;margin:0 0 18px}
 .work-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:36px;align-items:start}
 .work p.body{color:var(--ink-dim);margin:0 0 16px;line-height:1.75;max-width:62ch}
 .work ul{list-style:none;margin:0 0 16px;padding:0}
@@ -182,8 +180,6 @@ h2.title{font-size:24px;line-height:1.2;font-weight:700;margin:0 0 6px}
 /* footer: no bar, just text floating over the dawn glow */
 .status{position:fixed;bottom:0;left:0;width:100%;z-index:30;pointer-events:none}
 /* whatever scrolls behind the footer gets blurred and dimmed, fading out upward, so there's still no hard bar */
-/* while the boot screen is up, nothing of the page may peek out around it */
-body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
 .status::before{content:"";position:absolute;left:0;right:0;bottom:0;top:-36px;
   background:linear-gradient(0deg, rgba(3,4,26,.7), rgba(3,4,26,.45) 60%, rgba(3,4,26,0));
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
@@ -270,7 +266,7 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
         <p class="cmd"><b>$</b> whoami</p>
         <h1 class="name">Lucas Nagel</h1>
         <p class="intro">
-          software engineer, mostly <strong>full-stack and cloud infrastructure</strong>. computer science at uba. right now i'm building a <a href="#" onClick="{{ goWork }}">crm/erp</a> for a cargo inspection company that runs 24/7, and i made <a href="https://pact.ar/" target="_blank" rel="noopener">pact.ar</a>. from buenos aires.
+          software engineer from buenos aires, mostly <strong>full-stack and cloud infrastructure</strong>, studying computer science at uba. right now i'm building a <a href="#" onClick="{{ goWork }}">crm/erp</a> for a cargo inspection company that runs 24/7, and i made <a href="https://pact.ar/" target="_blank" rel="noopener">pact.ar</a>.
         </p>
 
         <div class="quote" onClick="{{ shuffleQuote }}">
@@ -408,18 +404,16 @@ body:has([data-boot]) :is(main,.bar,.status){visibility:hidden}
       <section>
         <a class="back" href="#" onClick="{{ goHomeLink }}">cd ..</a>
         <p class="cmd"><b>$</b> ls ~/work</p>
-        <h2 class="title">selected work</h2>
-        <p class="lede">client work and my own products.</p>
+        <h2 class="title">work</h2>
 
         <article class="work">
           <div class="work-head">
             <h3><span data-gt="cargo operations crm/erp">cargo operations crm/erp</span></h3>
-            <span>client work, confidential. pre-production.</span>
+            <span>client work, team of three, production</span>
           </div>
-          <p class="role">three-person team: architecture, full-stack and aws.</p>
           <div class="work-grid">
             <div>
-              <p class="body">a custom operational platform for a south american cargo inspection company, replacing fragmented zoho crm, spreadsheet, legacy-software and whatsapp workflows. it's being prepared for 50 to 100 internal users running 24/7 operations across argentina, brazil, chile and uruguay.</p>
+              <p class="body">a custom operational platform for a south american cargo inspection company, replacing what used to live in zoho crm, spreadsheets, old software and whatsapp. it's meant for 50 to 100 internal users running 24/7 operations across argentina, brazil, chile and uruguay.</p>
               <ul>
                 <sc-for list="{{ cargoHighlights }}" as="hl" hint-placeholder-count="4">
                   <li>{{ hl }}</li>
@@ -450,12 +444,11 @@ EC2 / Linux
         <article class="work">
           <div class="work-head">
             <h3><a href="https://pact.ar/" target="_blank" rel="noopener">pact.ar</a></h3>
-            <span>independent product, publicly deployed.</span>
+            <span>my own product, built solo</span>
           </div>
-          <p class="role">solo project: product design, full-stack and cloud infrastructure.</p>
           <div class="work-grid">
             <div>
-              <p class="body">a digital-contract saas for argentine freelancers and small businesses. i designed and shipped the whole product, including legally valid electronic signatures under law 25.506, email-based verification, mercado pago subscriptions, and self-managed oracle cloud infrastructure.</p>
+              <p class="body">a digital-contract saas for argentine freelancers and small businesses. contracts are signed online, and the signatures are legally valid under law 25.506.</p>
               <ul>
                 <sc-for list="{{ pactHighlights }}" as="hl" hint-placeholder-count="4">
                   <li>{{ hl }}</li>
@@ -503,18 +496,9 @@ EC2 / Linux
     </div>
   </sc-if>
 
-  <!-- boot -->
-  <sc-if value="{{ booting }}" hint-placeholder-val="{{ false }}">
-    <div data-boot onClick="{{ skipBoot }}" style="position:fixed;inset:0;z-index:90;background:var(--sky-top);display:flex;align-items:center;justify-content:center;cursor:pointer">
-      <div style="width:min(620px,90vw)">
-        <pre ref="{{ bootRef }}" style="margin:0;font-family:var(--mono);font-size:14px;line-height:1.7;color:var(--ink-dim);white-space:pre-wrap"></pre>
-      </div>
-    </div>
-  </sc-if>
-
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{},&quot;enableBoot&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Vibe&quot;},&quot;enableStars&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Vibe&quot;},&quot;enableScanlines&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Vibe&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{},&quot;enableStars&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Vibe&quot;},&quot;enableScanlines&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Vibe&quot;}}">
 class Component extends DCLogic {
   constructor(props){
     super(props);
@@ -526,10 +510,7 @@ class Component extends DCLogic {
     this.npRef = React.createRef();
     this.canvasRef = React.createRef();
     this.paletteInputRef = React.createRef();
-    this.bootRef = React.createRef();
 
-    const booted = (typeof sessionStorage!=='undefined') && sessionStorage.getItem('booted')==='1';
-    const enableBoot = this.props.enableBoot ?? true;
     let view = 'home';
     if (typeof location!=='undefined' && location.hash){
       const h = location.hash.replace('#','');
@@ -537,7 +518,6 @@ class Component extends DCLogic {
     }
 
     this.state = {
-      booting: enableBoot && !booted,
       view,
       paletteOpen:false,
       q:'',
@@ -555,18 +535,18 @@ class Component extends DCLogic {
     this.VINYLS = JSON.parse(`[{"cover":"images/kanye-west-mbdtf.jpg","title":"My Beautiful Dark Twisted Fantasy","artist":"Kanye West","year":2010,"duration":"74:45","tracklist":["Dark Fantasy","Gorgeous","Power","All of the Lights (Interlude)","All of the Lights","Monster","So Appalled","Devil In a New Dress","Runaway","Hell of a Life","Blame Game","Lost In the World","Who Will Survive In America","See Me Now"]},{"cover":"images/led-zeppelin-iv.jpg","title":"Led Zeppelin IV","artist":"Led Zeppelin","year":1971,"duration":"42:36","tracklist":["Black Dog","Rock and Roll","The Battle of Evermore","Stairway to Heaven","Misty Mountain Hop","Four Sticks","Going to California","When the Levee Breaks"]},{"cover":"images/arctic-monkeys-wpsiatwin.jpg","title":"Whatever People Say I Am, That's What I'm Not","artist":"Arctic Monkeys","year":2006,"duration":"41:19","tracklist":["The View from the Afternoon","I Bet You Look Good on the Dancefloor","Fake Tales of San Francisco","Dancing Shoes","You Probably Couldn't See for the Lights but You Were Looking Straight at Me","Still Take You Home","Riot Van","Red Light Indicates Doors Are Secured","Mardy Bum","Perhaps Vampires Is a Bit Strong But...","When the Sun Goes Down","From the Ritz to the Rubble","A Certain Romance"]},{"cover":"images/nas-illmatic.jpg","title":"Illmatic","artist":"Nas","year":1994,"duration":"39:50","tracklist":["The Genesis","N.Y. State of Mind","Life's a Bitch","The World Is Yours","Halftime","Memory Lane (Sittin' in da Park)","One Love","One Time 4 Your Mind","Represent","It Ain't Hard to Tell"]},{"cover":"images/arctic-monkeys-fwn.jpg","title":"Favourite Worst Nightmare","artist":"Arctic Monkeys","year":2007,"duration":"37:38","tracklist":["Brianstorm","Teddy Picker","D Is for Dangerous","Balaclava","Fluorescent Adolescent","Only Ones Who Know","Do Me a Favour","This House Is a Circus","If You Were There, Beware","The Bad Thing","Old Yellow Bricks","505"]},{"cover":"images/daft-punk-discovery.png","title":"Discovery","artist":"Daft Punk","year":2001,"duration":"61:08","tracklist":["One More Time","Aerodynamic","Digital Love","Harder Better Faster Stronger","Crescendolls","Nightvision","Superheroes","High Life","Something About Us","Voyager","Veridis Quo","Short Circuit","Face to Face","Too Long"]},{"cover":"images/daft-punk-ram.png","title":"Random Access Memories","artist":"Daft Punk","year":2013,"duration":"74:34","tracklist":["Give Life Back to Music","The Game of Love","Giorgio by Moroder","Within","Instant Crush","Lose Yourself to Dance","Touch","Get Lucky","Beyond","Motherboard","Fragments of Time","Doin' it Right","Contact"]},{"cover":"images/gustavo-cerati-bocanada.jpg","title":"Bocanada","artist":"Gustavo Cerati","year":1999,"duration":"69:25","tracklist":["Tabu","Engana","Bocanada","Puente","Rio Babel","Beautiful","Perdonar Es Divino","Verbo Carne","Raiz","Y Si el Humo Esta en Foco...","Paseo Inmoral","Aqui & Ahora (Los Primeros 3 Minutos)","Aqui & Ahora (y Despues)","Alma","Balsa"]},{"cover":"images/kanye-west-808s.jpg","title":"808s & Heartbreak","artist":"Kanye West","year":2008,"duration":"52:05","tracklist":["Say You Will","Welcome To Heartbreak","Heartless","Amazing","Love Lockdown","Paranoid","RoboCop","Street Lights","Bad News","See You In My Nightmares","Coldest Winter","Pinocchio Story (Live From Singapore)"]},{"cover":"images/kanye-west-graduation.jpg","title":"Graduation","artist":"Kanye West","year":2007,"duration":"54:30","tracklist":["Good Morning","Champion","Stronger","I Wonder","Good Life","Can't Tell Me Nothing","Barry Bonds","Drunk and Hot Girls","Flashing Lights","Everything I Am","The Glory","Homecoming","Big Brother","Good Night"]},{"cover":"images/pescado-rabioso-artaud.jpg","title":"Artaud","artist":"Pescado Rabioso","year":1973,"duration":"36:20","tracklist":["Todas las Hojas Son del Viento","Cementerio Club","Por","Supercheria","La Sed Verdadera","Cantata de Puentes Amarillos","Bajan","A Starosta, el Idiota","Las Habladurias del Mundo"]},{"cover":"images/pink-floyd-animals.jpg","title":"Animals","artist":"Pink Floyd","year":1977,"duration":"41:41","tracklist":["Pigs on the Wing, Part 1","Dogs","Pigs (Three Different Ones)","Sheep","Pigs on the Wing, Part 2"]},{"cover":"images/more-life.jpg","title":"More Life","artist":"Drake","year":2017,"duration":"81:39","tracklist":["Free Smoke","No Long Talk","Passionfruit","Jorja Interlude","Get It Together","Madiba Riddim","Blem","4422","Gyalchester","Skepta Interlude","Portland","Sacrifices","Nothings Into Somethings","Teenage Fever","Kmt","Lose You","Can't Have Everything","Glow","Since Way Back","Fake Love","Ice Melts","Do Not Disturb"]},{"cover":"images/late-registration.jpg","title":"Late Registration","artist":"Kanye West","year":2005,"duration":"70:02","tracklist":["Wake Up Mr. West","Heard 'Em Say","Touch the Sky","Gold Digger","Skit #1","Drive Slow","My Way Home","Crack Music","Roses","Bring Me Down","Addiction","Skit #2","Diamonds from Sierra Leone [Remix]","We Major","Skit #3","Hey Mama","Celebration","Skit #4","Gone","Diamonds from Sierra Leone","Late"]},{"cover":"images/ella-louis.jpg","title":"The Complete Ella and Louis on Verve","artist":"Ella Fitzgerald","year":1997,"duration":"219:02","tracklist":["Can't We Be Friends?","Isn't This a Lovely Day?","Moonlight in Vermont","They Can't Take That Away From Me","Under a Blanket of Blue","Tenderly","A Foggy Day","Stars Fell on Alabama","Cheek to Cheek","The Nearness of You","April in Paris","Don't Be That Way","Makin' Whoopee","They All Laughed","Comes Love","Autumn in New York","Let's Do It","Stompin' at the Savoy","I Won't Dance","Gee Baby, Ain't I Good to You?","Let's Call the Whole Thing Off","These Foolish Things","I've Got My Love to Keep Me Warm","Willow Weep for Me","A Fine Romance","Love Is Here to Stay","I Get a Kick Out of You","Learnin' the Blues","Summertime","Bess, You Is My Woman Now","It Ain't Necessarily So"]},{"cover":"images/ahi-vamos.jpg","title":"Ahi Vamos","artist":"Gustavo Cerati","year":2006,"duration":"56:34","tracklist":["Al Fin Sucede","La Excepcion","Uno Entre 1000","Caravana","Adios","Me Quedo Aqui","Lago en el Cielo","Dios Nos Libre","Otra Piel","Medium","Bomba de Tiempo","Crimen","Jugo de Luna"]},{"cover":"images/24k-magic.png","title":"24K Magic","artist":"Bruno Mars","year":2016,"duration":"33:33","tracklist":["24K Magic","Chunky","Perm","That's What I Like","Versace On The Floor","Straight Up & Down","Calling All My Lovelies","Finesse","Too Good to Say Goodbye"]},{"cover":"images/divididos-felicidad.jpg","title":"Divididos Por la Felicidad","artist":"Sumo","year":1985,"duration":"38:24","tracklist":["La Rubia Tarada","Mula Plateada","No Acabes","Regtest","El Reggae de Paz y Amor","Debede","Mejor No Hablar de Ciertas Cosas","Divididos Por la Felicidad","No Duermas Mas","Kaya"]},{"cover":"images/in-rainbows.png","title":"In Rainbows","artist":"Radiohead","year":2007,"duration":"42:39","tracklist":["15 Step","Bodysnatchers","Nude","Weird Fishes / Arpeggi","All I Need","Faust Arp","Reckoner","House of Cards","Jigsaw Falling Into Place","Videotape"]},{"cover":"images/mezzanine.png","title":"Mezzanine","artist":"Massive Attack","year":1998,"duration":"62:00","tracklist":["Angel","Risingson","Teardrop","Inertia Creeps","Exchange","Dissolved Girl","Man Next Door","Black Milk","Mezzanine","Group Four","(Exchange)"]},{"cover":"images/physical-graffity.jpg","title":"Physical Graffiti","artist":"Led Zeppelin","year":1975,"duration":"82:54","tracklist":["Custard Pie","The Rover","In My Time of Dying","Houses of the Holy","Trampled Under Foot","Kashmir","In the Light","Bron-Yr-Aur","Down By the Seaside","Ten Years Gone","Night Flight","The Wanton Song","Boogie With Stu","Black Country Woman","Sick Again"]},{"cover":"images/the-low-end-theory.jpg","title":"The Low End Theory","artist":"A Tribe Called Quest","year":1991,"duration":"48:04","tracklist":["Excursions","Buggin' Out","Rap Promoter","Butter","Verses From the Abstract","Show Business","Vibes and Stuff","The Infamous Date Rape","Check the Rhime","Everything Is Fair","Jazz (We've Got)","Skypager","What?","Scenario"]},{"cover":"images/sueño-stereo.jpg","title":"Sueno Stereo","artist":"Soda Stereo","year":1995,"duration":"53:02","tracklist":["Ella Uso Mi Cabeza Como un Revolver","Disco Eterno","Zoom","Ojo de la Tormenta","Efecto Doppler","Paseando Por Roma","Pasos","Angel Electrico","Crema de Estrellas","Planta","X Playo","Moire"]},{"cover":"images/sgt-pepper.jpg","title":"Sgt. Pepper's Lonely Hearts Club Band","artist":"The Beatles","year":1967,"duration":"39:52","tracklist":["Sgt. Pepper's Lonely Hearts Club Band","With a Little Help From My Friends","Lucy In the Sky with Diamonds","Getting Better","Fixing a Hole","She's Leaving Home","Being For the Benefit of Mr. Kite!","Within You Without You","When I'm Sixty-Four","Lovely Rita","Good Morning Good Morning","Sgt. Pepper's (Reprise)","A Day In the Life"]}]`);
 
     this.ROOMS = [
-      {label:'about',     path:'~/about',     desc:'more me',                 tag:'dir', kind:'view', to:'about'},
-      {label:'work',      path:'~/work',      desc:'client systems & products', tag:'dir', kind:'view', to:'work'},
-      {label:'github',    path:'gh://lucasn0',     desc:'code & dotfiles',         tag:'ext', kind:'ext', href:'https://github.com/lucasn0'},
-      {label:'linkedin',  path:'in/nagel-lucas',   desc:'experience & background',   tag:'ext', kind:'ext', href:'https://www.linkedin.com/in/nagel-lucas/'},
-      {label:'machine',   path:'~/machine',   desc:'die maschine',             tag:'dir', kind:'view', to:'computer'},
-      {label:'music',     path:'~/music',     desc:'the vinyl shelf',          tag:'dir', kind:'view', to:'music'},
-      {label:'library',   path:'~/library',   desc:'books, out of five',       tag:'dir', kind:'view', to:'library'},
-      {label:'bookmarks', path:'~/bookmarks', desc:'sites i go back to',       tag:'dir', kind:'view', to:'bookmarks'},
-      {label:'steam',     path:'id/fardes1',       desc:"hours i won't admit to",  tag:'ext', kind:'ext', href:'https://steamcommunity.com/id/fardes1/'},
-      {label:'movies',    path:'imdb/ratings',     desc:'films, rated',            tag:'ext', kind:'ext', href:'https://www.imdb.com/user/p.ivmfcxmxlais7jxw4c2hzk3opm/ratings/?ref_=up_hd_ql_urrat'},
-      {label:'email',     path:'mailto:lnagel',    desc:'say hello',               tag:'ext', kind:'ext', href:'mailto:lnagel@dc.uba.ar'},
-      {label:'youtube',   path:'yt://watch',       desc:"i'm so sorry",      tag:'ext', kind:'ext', href:'https://www.youtube.com/watch?v=dQw4w9WgXcQ'}
+      {label:'about',     path:'~/about',     desc:'me', tag:'dir', kind:'view', to:'about'},
+      {label:'work',      path:'~/work',      desc:'projects', tag:'dir', kind:'view', to:'work'},
+      {label:'github',    path:'gh://lucasn0',     desc:'code and dotfiles', tag:'ext', kind:'ext', href:'https://github.com/lucasn0'},
+      {label:'linkedin',  path:'in/nagel-lucas',   desc:'cv', tag:'ext', kind:'ext', href:'https://www.linkedin.com/in/nagel-lucas/'},
+      {label:'machine',   path:'~/machine',   desc:'my setup', tag:'dir', kind:'view', to:'computer'},
+      {label:'music',     path:'~/music',     desc:'records', tag:'dir', kind:'view', to:'music'},
+      {label:'library',   path:'~/library',   desc:'books', tag:'dir', kind:'view', to:'library'},
+      {label:'bookmarks', path:'~/bookmarks', desc:'links', tag:'dir', kind:'view', to:'bookmarks'},
+      {label:'steam',     path:'id/fardes1',       desc:'games', tag:'ext', kind:'ext', href:'https://steamcommunity.com/id/fardes1/'},
+      {label:'movies',    path:'imdb/ratings',     desc:'films', tag:'ext', kind:'ext', href:'https://www.imdb.com/user/p.ivmfcxmxlais7jxw4c2hzk3opm/ratings/?ref_=up_hd_ql_urrat'},
+      {label:'email',     path:'mailto:lnagel',    desc:'contact', tag:'ext', kind:'ext', href:'mailto:lnagel@dc.uba.ar'},
+      {label:'youtube',   path:'yt://watch',       desc:'a video', tag:'ext', kind:'ext', href:'https://www.youtube.com/watch?v=dQw4w9WgXcQ'}
     ];
 
     // cyan → turquoise → mint → lemon, softened to sit on the night sky. one per ~/ entry, in order
@@ -588,22 +568,6 @@ class Component extends DCLogic {
       }
     ];
 
-    // fake tty login; "last login" is the visitor's previous visit, like the real thing
-    let last=null;
-    try{ last=localStorage.getItem('lastLogin'); localStorage.setItem('lastLogin', new Date().toISOString()); }catch(e){}
-    const ok=t=>({h:'[  <span style="color:var(--accent)">OK</span>  ] '+t});
-    this.BOOT = [
-      {h:'Linux version 6.18.9-arch1-1 (luk@archlinux)'},
-      ok('Mounted /home/luk.'),
-      ok('Started Network Manager.'),
-      ok('Started last.fm scrobbler.'),
-      ok('Reached target Graphical Interface.'),
-      {h:'&nbsp;'},
-      {h:'<span style="color:var(--ink)">archlinux login: luk</span>'},
-      {h:'<span style="color:var(--ink)">Password:</span>'}
-    ];
-    if (last){ const d=new Date(last); if(!isNaN(d)) this.BOOT.push({h:`Last login: ${d.toDateString().slice(0,10)} ${d.toTimeString().slice(0,8)} on tty1`}); }
-
     this.glitch = this.glitch.bind(this);
     this.openPalette = this.openPalette.bind(this);
     this.closePalette = this.closePalette.bind(this);
@@ -613,17 +577,15 @@ class Component extends DCLogic {
     this.goHome = ()=>this.go('home');
     this.goHomeLink = (e)=>{ if(e) e.preventDefault(); this.go('home'); };
     this.goWork = (e)=>{ if(e) e.preventDefault(); this.go('work'); };
-    this.skipBoot = this.skipBoot.bind(this);
     this.onMusicLeave = ()=>this.setState({musicHover:null});
     this.stop = (e)=>e.stopPropagation();
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onPopState = this.onPopState.bind(this);
-    this.onVisibility = ()=>{ if(document.hidden){ try{ document.title='GET BACK IN HERE!'; }catch(e){} } else this.setTitle(this.state.view); };
     this.onResize = ()=>{ const m=window.innerWidth<680; if(m!==this.state.isMobile) this.setState({isMobile:m}); };
   }
 
   componentDidMount(){
-    try{ localStorage.removeItem('theme'); }catch(e){}   // leftover from when there were themes
+    try{ localStorage.removeItem('theme'); localStorage.removeItem('lastLogin'); }catch(e){}   // leftovers from the themes and the boot screen
     this._prevState = {...this.state};
     if ((this.props.enableStars ?? true)) this.initSky();
     this.startClock();
@@ -633,15 +595,13 @@ class Component extends DCLogic {
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('resize', this.onResize);
     window.addEventListener('popstate', this.onPopState);
-    document.addEventListener('visibilitychange', this.onVisibility);
     this.setMoonFavicon();
-    if (this.state.booting) this.runBoot();
-    else this.enterView(this.state.view, null);
+    this.enterView(this.state.view, null);
   }
 
   componentWillUnmount(){
     clearInterval(this._clock); clearInterval(this._tick); clearInterval(this._np);
-    clearInterval(this._donut); clearInterval(this._type); clearTimeout(this._bootTO);
+    clearInterval(this._donut); clearInterval(this._type);
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('popstate', this.onPopState);
@@ -651,7 +611,6 @@ class Component extends DCLogic {
     // the dc runtime doesn't always pass prevState, so keep our own copy
     prevState = prevState || this._prevState || this.state;
     this._prevState = {...this.state};
-    if (prevState.booting && !this.state.booting) this.enterView(this.state.view, null);
     if (prevState.view !== this.state.view) this.enterView(this.state.view, prevState.view);
     if (!this.state.paletteOpen && this.state.view==='home'){
       const q=document.querySelector('[data-quote]'), a=document.querySelector('[data-author]');
@@ -692,28 +651,6 @@ class Component extends DCLogic {
     }, 70);
   }
 
-  // ── boot ──
-  runBoot(){
-    const host = this.bootRef.current; if (!host){ this.finishBoot(); return; }
-    host.innerHTML=''; let i=0;
-    const step = ()=>{
-      if (i>=this.BOOT.length){ this._bootTO=setTimeout(()=>this.finishBoot(), 600); return; }
-      const d=document.createElement('div');
-      d.style.cssText='opacity:0;animation:bootline .3s ease forwards';
-      d.innerHTML=this.BOOT[i].h; host.appendChild(d); i++;
-      this._bootTO=setTimeout(step, 220);
-    };
-    step();
-  }
-  skipBoot(){ this.finishBoot(); }
-  finishBoot(){
-    clearTimeout(this._bootTO);
-    if (!this.state.booting) return;
-    try{ sessionStorage.setItem('booted','1'); }catch(e){}
-    this.setState({booting:false});
-    setTimeout(()=>this.enterView(this.state.view), 70);
-  }
-
   // ── clock + ticker ──
   startClock(){
     const tick=()=>{ const el=document.querySelector('[data-clock]'); if(el){ el.textContent = new Date().toTimeString().slice(0,8); } };
@@ -725,8 +662,7 @@ class Component extends DCLogic {
     const dd=Math.floor(diff/86400000);
     const hh=Math.floor(diff%86400000/3600000);
     const mm=Math.floor(diff%3600000/60000);
-    const laps=(diff/(365.25636*86400000)).toFixed(2);   // sidereal years
-    return `alive for ${dd.toLocaleString()} days, ${hh}h ${mm}m, ${laps} laps around the sun`;
+    return `uptime: ${dd} days, ${hh}h ${mm}m`;
   }
   startTicker(){
     this._npText='now listening to silence';
@@ -948,7 +884,7 @@ class Component extends DCLogic {
     const SKIP='a,button,input,textarea,select,label,summary,img,pre,canvas,[contenteditable],.home,.quote,.pal-bg,.moon,.bar';
     if(!calm){
       window.addEventListener('click',e=>{
-        if(this.state.booting || e.button!==0) return;
+        if(e.button!==0) return;
         if(e.target.closest && e.target.closest(SKIP)) return;
         if(String(window.getSelection?.()||'')) return;   // finished a text selection, not a click
         const n=Math.round(rnd(9,16));
@@ -959,7 +895,7 @@ class Component extends DCLogic {
             age:0, life:rnd(0.9,1.8), hist:[]});
         }
         if(sparks.length>220) sparks.splice(0,sparks.length-220);
-      },true);   // capture: runs before the boot overlay's handler flips booting off
+      },true);
     }
     const drawSparks=(dt)=>{
       sctx.clearRect(0,0,SW,SH);
@@ -1127,7 +1063,7 @@ class Component extends DCLogic {
       document.addEventListener('mouseleave',()=>{ mouse=null; if(shown && shown.out===null) shown.out=0; });
     }
     const drawConstellation=(dt)=>{
-      if(mouse && !shown && !this.state.booting && !this.state.paletteOpen){
+      if(mouse && !shown && !this.state.paletteOpen){
         still+=dt;
         if(still>=1 && isSky(mouse.el)){
           let i; do{ i=Math.floor(Math.random()*CONST.length); }while(i===lastC && CONST.length>1);
@@ -1415,7 +1351,6 @@ class Component extends DCLogic {
 
   // ── global keys ──
   onKeyDown(e){
-    if(this.state.booting){ this.finishBoot(); return; }
     if(this.state.paletteOpen) return; // palette handles its own
     const tag=(e.target.tagName||'').toLowerCase();
     if(tag==='input'||tag==='textarea') return;
@@ -1450,7 +1385,7 @@ class Component extends DCLogic {
     const vinyls=this.VINYLS.map((a)=>{
       const open=hover===a.title;
       return {
-        title:a.title, cover:a.cover, meta:`${a.artist}, ${a.year}. ${a.duration}`,
+        title:a.title, cover:a.cover, meta:`${a.artist}, ${a.year}, ${a.duration}`,
         tracklist:a.tracklist.map((t,i)=>({ n:String(i+1).padStart(2,'0'), t })),
         aw: base,
         fw: open?expand:base, off: open?offV:'0px',
@@ -1475,8 +1410,7 @@ class Component extends DCLogic {
     return {
       rootRef:this.rootRef, quoteRef:this.quoteRef, authorRef:this.authorRef,
       clockRef:this.clockRef, tickerRef:this.tickerRef, npRef:this.npRef,
-      canvasRef:this.canvasRef, paletteInputRef:this.paletteInputRef, bootRef:this.bootRef,
-      booting:this.state.booting,
+      canvasRef:this.canvasRef, paletteInputRef:this.paletteInputRef,
       isMobile: this.state.isMobile, showTopExtras: !this.state.isMobile,
       scanlines: this.props.enableScanlines ?? false,
       isHome:v==='home', isAbout:v==='about', isLibrary:v==='library',
@@ -1484,15 +1418,15 @@ class Component extends DCLogic {
       paletteOpen:this.state.paletteOpen, q:this.state.q,
       noResults: this.state.paletteOpen && palItems.length===0,
       rooms, library, shelf, bookmarks, vinyls, machines, palItems,
-      cargoStack:this.CARGO_STACK.join(', ')+'.', pactStack:this.PACT_STACK.join(', ')+'.',
+      cargoStack:this.CARGO_STACK.join(', '), pactStack:this.PACT_STACK.join(', '),
       goHomeLink:this.goHomeLink,
-      cargoHighlights:['operational workflows for client orders, cargo inspections, vessels, inventory, invoicing, reporting, statistics, and internal alerts.','next.js frontend, fastapi backend, and postgresql database.','self-managed linux deployment on aws ec2 with rds and s3.','health-checked deployment workflow that validates releases before switching application processes.'],
-      pactHighlights:['built it alone, from design to production.','implemented the electronic-signature and email-verification workflow.','integrated mercado pago subscription billing and payment-state handling.','runs on oracle cloud infra i set up and maintain myself.'],
+      cargoHighlights:['handles orders, inspections, vessels, inventory, invoicing, reports and internal alerts','self-managed on aws, ec2 with rds and s3','every deploy is health-checked before it replaces the running release'],
+      pactHighlights:['electronic signatures with email verification','subscriptions billed through mercado pago','runs on oracle cloud infra i set up and maintain myself'],
       bookCount:this.LIBRARY.length, vinylCount:this.VINYLS.length,
       dimOpacity: hover?1:0,
       glitch:this.glitch, goHome:this.goHome, goWork:this.goWork, openPalette:this.openPalette,
       closePalette:this.closePalette, onQuery:this.onQuery, onPaletteKey:this.onPaletteKey,
-      shuffleQuote:this.shuffleQuote, skipBoot:this.skipBoot, onMusicLeave:this.onMusicLeave, stop:this.stop
+      shuffleQuote:this.shuffleQuote, onMusicLeave:this.onMusicLeave, stop:this.stop
     };
   }
 }
