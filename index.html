@@ -71,9 +71,6 @@ body::after{content:"";position:fixed;inset:0;z-index:100;pointer-events:none;op
   animation:spin 1.8s linear infinite;animation-play-state:paused}
 .disc.on{animation-play-state:running}
 @keyframes spin{to{transform:rotate(360deg)}}
-.plain{background:none;border:0;padding:0;font:inherit;color:var(--ink-dim);cursor:pointer;flex:0 0 auto;white-space:nowrap}
-.plain:hover{color:var(--ink)}
-.plain u{text-underline-offset:3px}
 .clock{flex:0 0 auto;color:var(--ink-faint);font-variant-numeric:tabular-nums}
 
 /* page */
@@ -109,22 +106,6 @@ h2.title{font-size:24px;line-height:1.2;font-weight:700;margin:0 0 6px}
 .prose b{color:var(--ink);font-weight:400}
 .donut{font-family:var(--mono);font-size:11px;line-height:1.05;color:var(--accent);white-space:pre;margin:36px 0 0;min-height:260px;overflow:hidden}
 
-/* library: a shelf of spines (width = page count, colour = rating), then the plain list */
-.bookshelf{display:flex;flex-wrap:wrap;align-items:flex-start;align-content:flex-start;gap:0 3px;max-width:860px;margin:0 0 40px;padding:0 2px;
-  background:repeating-linear-gradient(180deg, transparent 0 190px, rgba(236,235,243,.16) 190px 192px, rgba(236,235,243,.07) 192px 197px, transparent 197px 206px)}
-.spine{position:relative;flex:0 0 auto;height:190px;contain:size layout;margin:0 0 16px;display:flex;justify-content:center;border-radius:2px 2px 0 0;
-  background-clip:content-box;
-  background-image:
-    linear-gradient(180deg, rgba(0,0,0,.28) 0 3px, transparent 3px 10px, rgba(255,255,255,.14) 10px 11px, transparent 11px calc(100% - 12px), rgba(255,255,255,.14) calc(100% - 12px) calc(100% - 11px), transparent calc(100% - 11px) calc(100% - 3px), rgba(0,0,0,.28) calc(100% - 3px)),
-    linear-gradient(90deg, rgba(255,255,255,.14), transparent 35%, transparent 70%, rgba(0,0,0,.28));
-  transition:transform .25s cubic-bezier(.22,1,.36,1)}
-.spine:hover{transform:translateY(-10px);z-index:5}
-.sp-t{writing-mode:vertical-rl;white-space:nowrap;overflow:hidden;font-size:10.5px;line-height:1;letter-spacing:.02em;margin:16px 0;min-height:0;opacity:.92}
-.spine .tip{position:absolute;left:50%;transform:translate(-50%,calc(-100% - 10px));padding:7px 10px;border-radius:4px;background:rgba(3,4,26,.92);border:1px solid var(--line);
-  color:var(--ink-dim);font-size:12px;line-height:1.45;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s}
-.spine .tip b{display:block;color:var(--ink);font-weight:700;font-style:italic}
-.spine .tip em{font-style:normal;color:var(--accent)}
-.spine:hover .tip{opacity:1}
 .books{max-width:860px;border-top:1px solid var(--line)}
 .book{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) 7ch;gap:20px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line-2)}
 .book .t{font-style:italic}
@@ -197,16 +178,6 @@ h2.title{font-size:24px;line-height:1.2;font-weight:700;margin:0 0 6px}
   background:radial-gradient(circle at 50% 0, #cfe0ff 0 1.6px, transparent 2px)}
 @keyframes orbit{to{transform:rotate(360deg)}}
 
-/* palette */
-.pal-bg{position:fixed;inset:0;z-index:60;background:rgba(2,3,16,.7);display:flex;align-items:flex-start;justify-content:center;padding-top:13vh}
-.pal{width:min(540px,92vw);background:var(--panel);border:1px solid var(--line);box-shadow:8px 8px 0 rgba(0,0,0,.5)}
-.pal-in{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--line)}
-.pal-in input{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:inherit;font-size:15px}
-.pal-in small{color:var(--ink-faint);font-size:12px}
-.pal-list{max-height:54vh;overflow-y:auto;padding:6px 0}
-.pal-item{display:flex;align-items:baseline;gap:12px;padding:7px 16px;cursor:pointer}
-.pal-item .n{flex:1}
-.pal-item .p{color:var(--ink-faint);font-size:12.5px}
 
 @media (max-width:720px){
   .bar-in{gap:14px;padding:12px 16px}
@@ -249,8 +220,6 @@ h2.title{font-size:24px;line-height:1.2;font-weight:700;margin:0 0 6px}
           <span class="disc" data-disc="1" aria-hidden="true"></span><span data-np-label="1">listening to</span> <span data-np="1">...</span>
         </sc-if>
       </div>
-
-      <button class="plain" onClick="{{ openPalette }}"><u>search</u></button>
 
       <sc-if value="{{ showTopExtras }}" hint-placeholder-val="{{ true }}">
         <span data-clock="1" class="clock">--:--:--</span>
@@ -310,14 +279,6 @@ h2.title{font-size:24px;line-height:1.2;font-weight:700;margin:0 0 6px}
         <p class="cmd"><b>$</b> sort reading.log</p>
         <h2 class="title">library</h2>
         <p class="lede">{{ bookCount }} books, rated out of five.</p>
-        <div class="bookshelf">
-          <sc-for list="{{ shelf }}" as="s" hint-placeholder-count="14">
-            <div class="spine" style="width:{{ s.w }}px;padding-top:{{ s.pt }}px;background-color:{{ s.bg }};color:{{ s.fg }}">
-              <span class="sp-t">{{ s.label }}</span>
-              <span class="tip" style="top:{{ s.pt }}px"><b>{{ s.book }}</b>{{ s.author }}, <em>{{ s.stars }}</em></span>
-            </div>
-          </sc-for>
-        </div>
         <div class="books">
           <sc-for list="{{ library }}" as="b" hint-placeholder-count="10">
             <div class="book">
@@ -472,30 +433,6 @@ EC2 / Linux
     </div>
   </footer>
 
-  <!-- palette -->
-  <sc-if value="{{ paletteOpen }}" hint-placeholder-val="{{ false }}">
-    <div class="pal-bg" onClick="{{ closePalette }}">
-      <div class="pal" onClick="{{ stop }}">
-        <div class="pal-in">
-          <span style="color:var(--accent)">$</span>
-          <input data-pal-input="1" value="{{ q }}" onInput="{{ onQuery }}" onKeyDown="{{ onPaletteKey }}" placeholder="go to..." aria-label="search the site" />
-          <small>esc</small>
-        </div>
-        <div class="pal-list">
-          <sc-for list="{{ palItems }}" as="it" hint-placeholder-count="6">
-            <div class="pal-item" onClick="{{ it.onClick }}" onMouseEnter="{{ it.onHover }}" style="background:{{ it.bg }};color:{{ it.fg }}">
-              <span class="n">{{ it.name }}</span>
-              <span class="p" style="color:{{ it.pfg }}">{{ it.path }}</span>
-            </div>
-          </sc-for>
-          <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
-            <div style="padding:14px 16px;color:var(--ink-faint);font-size:13px">nothing matches.</div>
-          </sc-if>
-        </div>
-      </div>
-    </div>
-  </sc-if>
-
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{},&quot;enableStars&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Vibe&quot;},&quot;enableScanlines&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Vibe&quot;}}">
@@ -509,7 +446,6 @@ class Component extends DCLogic {
     this.tickerRef = React.createRef();
     this.npRef = React.createRef();
     this.canvasRef = React.createRef();
-    this.paletteInputRef = React.createRef();
 
     let view = 'home';
     if (typeof location!=='undefined' && location.hash){
@@ -519,9 +455,6 @@ class Component extends DCLogic {
 
     this.state = {
       view,
-      paletteOpen:false,
-      q:'',
-      sel:0,
       musicHover:null,
       isMobile: (typeof window!=='undefined' && window.innerWidth<680)
     };
@@ -569,16 +502,11 @@ class Component extends DCLogic {
     ];
 
     this.glitch = this.glitch.bind(this);
-    this.openPalette = this.openPalette.bind(this);
-    this.closePalette = this.closePalette.bind(this);
-    this.onQuery = this.onQuery.bind(this);
-    this.onPaletteKey = this.onPaletteKey.bind(this);
     this.shuffleQuote = this.shuffleQuote.bind(this);
     this.goHome = ()=>this.go('home');
     this.goHomeLink = (e)=>{ if(e) e.preventDefault(); this.go('home'); };
     this.goWork = (e)=>{ if(e) e.preventDefault(); this.go('work'); };
     this.onMusicLeave = ()=>this.setState({musicHover:null});
-    this.stop = (e)=>e.stopPropagation();
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onPopState = this.onPopState.bind(this);
     this.onResize = ()=>{ const m=window.innerWidth<680; if(m!==this.state.isMobile) this.setState({isMobile:m}); };
@@ -612,19 +540,16 @@ class Component extends DCLogic {
     prevState = prevState || this._prevState || this.state;
     this._prevState = {...this.state};
     if (prevState.view !== this.state.view) this.enterView(this.state.view, prevState.view);
-    if (!this.state.paletteOpen && this.state.view==='home'){
+    if (this.state.view==='home'){
       const q=document.querySelector('[data-quote]'), a=document.querySelector('[data-author]');
       if (q && this.typed) q.textContent = this.typed;
       if (a && this.typedAuthor) a.textContent = this.typedAuthor;
-    }
-    if (this.state.paletteOpen && !prevState.paletteOpen && this.paletteInputRef.current){
-      this.paletteInputRef.current.focus();
     }
   }
 
   // ── navigation ──
   go(view){
-    this.setState({view, paletteOpen:false, q:'', sel:0});
+    this.setState({view});
     try{ if (view==='home') history.pushState(null,'',location.pathname); else history.pushState(null,'','#'+view); }catch(e){}
     window.scrollTo({top:0});
     setTimeout(()=>this.enterView(view), 70);
@@ -632,7 +557,7 @@ class Component extends DCLogic {
   onPopState(){
     const h=(typeof location!=='undefined')?location.hash.replace('#',''):'';
     const view=['about','work','library','bookmarks','computer','music'].includes(h)?h:'home';
-    this.setState({view, paletteOpen:false, q:'', sel:0});
+    this.setState({view});
     window.scrollTo({top:0});
     setTimeout(()=>this.enterView(view), 70);
   }
@@ -881,7 +806,7 @@ class Component extends DCLogic {
 
     // sparks: a burst of stars flung out in random directions, slowing down and fading
     const sparks=[];
-    const SKIP='a,button,input,textarea,select,label,summary,img,pre,canvas,[contenteditable],.home,.quote,.pal-bg,.moon,.bar';
+    const SKIP='a,button,input,textarea,select,label,summary,img,pre,canvas,[contenteditable],.home,.quote,.moon,.bar';
     if(!calm){
       window.addEventListener('click',e=>{
         if(e.button!==0) return;
@@ -1063,7 +988,7 @@ class Component extends DCLogic {
       document.addEventListener('mouseleave',()=>{ mouse=null; if(shown && shown.out===null) shown.out=0; });
     }
     const drawConstellation=(dt)=>{
-      if(mouse && !shown && !this.state.paletteOpen){
+      if(mouse && !shown){
         still+=dt;
         if(still>=1 && isSky(mouse.el)){
           let i; do{ i=Math.floor(Math.random()*CONST.length); }while(i===lastC && CONST.length>1);
@@ -1253,30 +1178,6 @@ class Component extends DCLogic {
     stars.sort((p,q)=>p.c<q.c?-1:p.c>q.c?1:0);          // fewer fillStyle switches per frame
     return stars;
   }
-  // spines for the shelf: grouped by author (series stay in reading order), width from the page count
-  // of a common edition, height and shade jittered per title so it looks like a real shelf
-  shelfBooks(){
-    const P={'Permanent Record':339,'Structure and Interpretation of Computer Programs':657,'El Libro de Arena':130,'Ficciones':174,'The Martian':369,'1984':328,
-      'The 48 Laws of Power':452,'A Brief History of Time':212,'Black Holes':80,'How to Read a Book':426,'The Pedestrian':12,'The Stranger':123,'The Hunger Games #1':374,
-      "Man's Search for Meaning":165,'Lord of the Flies':224,'The Subtle Art of Not Giving a F*ck':224,'Contact':432,'La era del malestar':240,'The Hobbit':310,
-      'The Fellowship of the Ring':423,'The Two Towers':352,'The Return of the King':416,'The Way of Kings':1007,'Words of Radiance':1087,'Oathbringer':1243,
-      'Rhythm of War':1232,'Elantris':638,'Mistborn: The Final Empire':541,'Mistborn: The Well of Ascension':590,'Mistborn: The Hero of Ages':572,'Warbreaker':592,
-      'Edgedancer':272,'Dawnshard':256,'Harry Potter #1':223,'Harry Potter #2':251,'Foundation':255,'Foundation and Empire':247,'Second Foundation':256,
-      'Steve Jobs':656,'Elon Musk':688,'El Aleph':146,'Veinte mil leguas de viaje submarino':426,'Brave New World':311,'Economics in One Lesson':218,
-      'El Marino que Perdió la Gracia del Mar':181,'Don Quijote de la Mancha':1072};
-    const hash=t=>{ let h=2166136261; for(const ch of t){ h^=ch.codePointAt(0); h=Math.imul(h,16777619); } return (h>>>0)/4294967296; };
-    const tone={5:[26,85,52,'#1c0f04'],4:[36,42,40,'#f3e9da'],3:[236,28,36,'#e4e5f6'],0:[230,12,26,'#a2a4c3']};
-    const order=[...new Set(this.LIBRARY.map(b=>b.author))].sort((a,b)=>a.localeCompare(b));
-    return order.flatMap(a=>this.LIBRARY.filter(b=>b.author===a)).map(b=>{
-      const r=hash(b.book), [hu,sa,li,fg]=tone[b.rating]||tone[0];
-      const w=Math.round(Math.max(15,Math.min(50,12+38*Math.sqrt((P[b.book]||300)/1250))));
-      const h=Math.round(140+r*48);
-      // the title has to fit between the spine's two bands: ~6.6px per character at 10.5px mono
-      const fit=Math.floor((h-34)/6.6), label=[...b.book].length>fit?[...b.book].slice(0,fit-1).join('').trimEnd()+'…':b.book;
-      return {book:b.book, label, author:b.author, stars:b.rating>0?this.stars(b.rating):'n/a', w, pt:190-h,
-        bg:`hsl(${(hu+(r-.5)*14).toFixed(0)} ${sa}% ${(li+(hash(b.book+'l')-.5)*10).toFixed(0)}%)`, fg};
-    });
-  }
   // favicon: today's moon, lit side and terminator drawn properly (a half-disc plus a half-ellipse)
   setMoonFavicon(){
     try{
@@ -1321,42 +1222,11 @@ class Component extends DCLogic {
   }
   stopDonut(){ if(this._donut){ clearInterval(this._donut); this._donut=null; } }
 
-  // ── palette ──
-  openPalette(){ this.setState({paletteOpen:true, q:'', sel:0}); setTimeout(()=>{ const el=document.querySelector('[data-pal-input]'); if(el) el.focus(); },70); }
-  closePalette(){ this.setState({paletteOpen:false}); }
-  onQuery(e){ this.setState({q:e.target.value, sel:0}); }
-  paletteList(){
-    const acts=[
-      ...this.ROOMS.map(r=>({name:r.label, path:r.path, icon: r.kind==='ext'?'↗':'›', kind:r.kind, to:r.to, href:r.href})),
-      {name:'home', path:'~/', icon:'⌂', action:()=>this.go('home')},
-      {name:'shuffle quote', path:'rand()', icon:'⟳', action:()=>{ this.go('home'); setTimeout(()=>this.shuffleQuote(),40); }},
-
-    ];
-    const q=this.state.q.trim().toLowerCase();
-    if(!q) return acts;
-    return acts.filter(a=>(a.name+' '+a.path).toLowerCase().includes(q));
-  }
-  runItem(it){
-    if(it.action){ it.action(); this.closePalette(); return; }
-    if(it.kind==='ext'){ window.open(it.href,'_blank','noopener'); this.closePalette(); return; }
-    this.go(it.to);
-  }
-  onPaletteKey(e){
-    const list=this.paletteList();
-    if(e.key==='ArrowDown'||(e.key==='j'&&e.ctrlKey)){ e.preventDefault(); this.setState({sel:Math.min(this.state.sel+1,list.length-1)}); }
-    else if(e.key==='ArrowUp'||(e.key==='k'&&e.ctrlKey)){ e.preventDefault(); this.setState({sel:Math.max(this.state.sel-1,0)}); }
-    else if(e.key==='Enter'){ e.preventDefault(); if(list[this.state.sel]) this.runItem(list[this.state.sel]); }
-    else if(e.key==='Escape'){ this.closePalette(); }
-  }
-
   // ── global keys ──
   onKeyDown(e){
-    if(this.state.paletteOpen) return; // palette handles its own
     const tag=(e.target.tagName||'').toLowerCase();
     if(tag==='input'||tag==='textarea') return;
-    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); this.openPalette(); return; }
     if(e.metaKey||e.ctrlKey||e.altKey) return;
-    if(e.key==='/'){ e.preventDefault(); this.openPalette(); return; }
     if(e.key==='Escape'){ if(this.state.view!=='home') this.go('home'); return; }
     const map={a:'about',w:'work',m:'music',l:'library',b:'bookmarks',c:'computer',h:'home'};
     if(map[e.key]) this.go(map[e.key]);
@@ -1373,7 +1243,6 @@ class Component extends DCLogic {
       target: r.kind==='ext'? '_blank' : undefined,
       onClick: r.kind==='ext'? null : (e)=>{ e.preventDefault(); this.go(r.to); }
     }));
-    const shelf=this.shelfBooks();
     const library=this.LIBRARY.map(b=>({ book:b.book, author:b.author, stars: b.rating>0? this.stars(b.rating) : 'n/a' })).sort((a,b)=>a.book.localeCompare(b.book,undefined,{sensitivity:'base',numeric:true}));
     const bookmarks=this.BOOKMARKS.map(b=>{ let host=''; try{ host=new URL(b.url).hostname.replace('www.',''); }catch(e){ host=''; } return {name:b.name, url:b.url, host}; });
 
@@ -1397,36 +1266,23 @@ class Component extends DCLogic {
 
     const machines=this.MACHINES.map(m=>({caption:m.caption, host:m.host, logo:m.logo, body:m.body}));
 
-    const pl=this.paletteList();
-    const palItems=pl.map((it,i)=>({
-      name:it.name, path:it.path, icon:it.icon,
-      bg: i===this.state.sel? 'var(--ink)' : 'transparent',
-      fg: i===this.state.sel? 'var(--sky-top)' : 'var(--ink)',
-      pfg: i===this.state.sel? 'var(--sky-top)' : 'var(--ink-faint)',
-      onClick:()=>this.runItem(it),
-      onHover:()=>this.setState({sel:i})
-    }));
-
     return {
       rootRef:this.rootRef, quoteRef:this.quoteRef, authorRef:this.authorRef,
       clockRef:this.clockRef, tickerRef:this.tickerRef, npRef:this.npRef,
-      canvasRef:this.canvasRef, paletteInputRef:this.paletteInputRef,
+      canvasRef:this.canvasRef,
       isMobile: this.state.isMobile, showTopExtras: !this.state.isMobile,
       scanlines: this.props.enableScanlines ?? false,
       isHome:v==='home', isAbout:v==='about', isLibrary:v==='library',
       isBookmarks:v==='bookmarks', isComputer:v==='computer', isMusic:v==='music', isWork:v==='work',
-      paletteOpen:this.state.paletteOpen, q:this.state.q,
-      noResults: this.state.paletteOpen && palItems.length===0,
-      rooms, library, shelf, bookmarks, vinyls, machines, palItems,
+      rooms, library, bookmarks, vinyls, machines,
       cargoStack:this.CARGO_STACK.join(', '), pactStack:this.PACT_STACK.join(', '),
       goHomeLink:this.goHomeLink,
       cargoHighlights:['handles orders, inspections, vessels, inventory, invoicing, reports and internal alerts','self-managed on aws, ec2 with rds and s3','every deploy is health-checked before it replaces the running release'],
       pactHighlights:['electronic signatures with email verification','subscriptions billed through mercado pago','runs on oracle cloud infra i set up and maintain myself'],
       bookCount:this.LIBRARY.length, vinylCount:this.VINYLS.length,
       dimOpacity: hover?1:0,
-      glitch:this.glitch, goHome:this.goHome, goWork:this.goWork, openPalette:this.openPalette,
-      closePalette:this.closePalette, onQuery:this.onQuery, onPaletteKey:this.onPaletteKey,
-      shuffleQuote:this.shuffleQuote, onMusicLeave:this.onMusicLeave, stop:this.stop
+      glitch:this.glitch, goHome:this.goHome, goWork:this.goWork,
+      shuffleQuote:this.shuffleQuote, onMusicLeave:this.onMusicLeave
     };
   }
 }
